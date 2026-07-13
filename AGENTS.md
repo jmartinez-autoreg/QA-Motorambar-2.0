@@ -97,7 +97,7 @@ Si el usuario menciona: test plans, TCs, ejecutar, automatizar, crear tests, cor
 | "configurar contexto", "nuevo proyecto", "actualizar UI-UX", "agregar pantallas/screenshots", "onboarding" | `project-onboarding` | — |
 | "qué hice hoy", "mi bitácora", "pendientes del sprint" | `activity-logger` | QA-PRO o PO-PRO (el activo) |
 
-Rutas de skills: `.claude/skills/<skill>/SKILL.md`.
+Rutas de skills: `skills/<skill>/SKILL.md`.
 
 ---
 
@@ -133,7 +133,7 @@ llamada MCP falla por algo prevenible con una mejor regla.
    CUALQUIER proyecto que use este template. Vive en el repo QA-TOOLS-TEMPLATE:
    - Regla global / routing / prohibición           → AGENTS.md
    - Regla de rol (QA o PO)                         → .claude/agents/QA-PRO.agent.md  o  .claude/agents/PO-PRO.agent.md
-   - Mecánica de una tarea                          → .claude/skills/[SKILL]/SKILL.md
+   - Mecánica de una tarea                          → skills/[SKILL]/SKILL.md
    - Nombre de tool / entrada de plataforma         → CLAUDE.md  o  .github/copilot-instructions.md
    - Nueva sección/campo de context/*.md (estructura, no valor) → Template/context/*.template.md
 
@@ -184,7 +184,7 @@ allá): aquí se **bajan** (pull) los cambios acumulados en QA-TOOLS-TEMPLATE ha
      Si está vacío o con placeholder → **preguntar** la ruta absoluta al repo en disco y guardarla
      en ese campo.
    - Comparar, archivo por archivo, este proyecto contra QA-TOOLS-TEMPLATE: `AGENTS.md` ↔
-     `<ruta>/AGENTS.md`, `.claude/skills/*/SKILL.md` ↔ `<ruta>/skills/*/SKILL.md`,
+     `<ruta>/AGENTS.md`, `skills/*/SKILL.md` ↔ `<ruta>/skills/*/SKILL.md`,
      `.claude/agents/*.agent.md` / `.github/agents/*.agent.md` ↔ `<ruta>/agents/*.agent.md`,
      `CLAUDE.md` ↔ `<ruta>/Template/CLAUDE.md`, `.github/copilot-instructions.md` ↔
      `<ruta>/Template/copilot-instructions.md`, y la **estructura** (secciones/campos nuevos, no

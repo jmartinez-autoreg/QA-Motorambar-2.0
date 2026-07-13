@@ -130,15 +130,15 @@ La pregunta **A o B** y su descripción están en `AGENTS.md` (PASO 0). Tras rec
 
 | Tarea | Skill | Ruta |
 |-------|-------|------|
-| Analizar US, preparar TP, crear TC, daily, tablas de tiempo | `qa_tester` | `.claude/skills/qa_tester/SKILL.md` |
-| Registrar horas en Zoho | `zoho_timelog` | `.claude/skills/zoho_timelog/SKILL.md` |
-| Ejecutar TPs, capturar screenshots, subir evidencia a ADO | `qa-execution-reporter` | `.claude/skills/qa-execution-reporter/SKILL.md` |
-| Automatización E2E completa (pipeline) | `playwright-e2e` | `.claude/skills/playwright-e2e/SKILL.md` |
-| Leer TCs de ADO sin ejecutar | `tc-reader` | `.claude/skills/tc-reader/SKILL.md` |
-| Crear TCs genéricos en ADO | `create-test-cases` | `.claude/skills/create-test-cases/SKILL.md` |
-| Diagnosticar fallos E2E Playwright | `debugger` | `.claude/skills/debugger/SKILL.md` |
-| Generar fixtures + specs (pipeline A) | `code-builder`, `discovery`, `executor` | `.claude/skills/<name>/SKILL.md` |
-| Bitácora de actividad (registro automático + consultas) | `activity-logger` | `.claude/skills/activity-logger/SKILL.md` |
+| Analizar US, preparar TP, crear TC, daily, tablas de tiempo | `qa_tester` | `skills/qa_tester/SKILL.md` |
+| Registrar horas en Zoho | `zoho_timelog` | `skills/zoho_timelog/SKILL.md` |
+| Ejecutar TPs, capturar screenshots, subir evidencia a ADO | `qa-execution-reporter` | `skills/qa-execution-reporter/SKILL.md` |
+| Automatización E2E completa (pipeline) | `playwright-e2e` | `skills/playwright-e2e/SKILL.md` |
+| Leer TCs de ADO sin ejecutar | `tc-reader` | `skills/tc-reader/SKILL.md` |
+| Crear TCs genéricos en ADO | `create-test-cases` | `skills/create-test-cases/SKILL.md` |
+| Diagnosticar fallos E2E Playwright | `debugger` | `skills/debugger/SKILL.md` |
+| Generar fixtures + specs (pipeline A) | `code-builder`, `discovery`, `executor` | `skills/<name>/SKILL.md` |
+| Bitácora de actividad (registro automático + consultas) | `activity-logger` | `skills/activity-logger/SKILL.md` |
 
 > El routing primario por palabras clave está en `AGENTS.md`. Aquí está el roster QA completo.
 
@@ -156,7 +156,7 @@ La pregunta **A o B** y su descripción están en `AGENTS.md` (PASO 0). Tras rec
 | Algún TC/escenario falla | `[ADO]` US se mantiene en `Resolved` + crear Bug vinculado + publicar evidencia vía `qa-execution-reporter` |
 
 > El estado `Closed` **solo lo cambia QA** — representa la aprobación QA de la historia.
-> Antes de cerrar, verificar el checklist de `.claude/skills/po-user-story/references/definition-of-done.md`
+> Antes de cerrar, verificar el checklist de `skills/po-user-story/references/definition-of-done.md`
 > (Definition of Done, 7 ítems).
 
 4. **Checkpoint de contexto al cerrar (obligatorio antes de marcar `Closed`):** revisar qué
@@ -175,7 +175,7 @@ La pregunta **A o B** y su descripción están en `AGENTS.md` (PASO 0). Tras rec
    desactualizado que romperá el checkpoint anti-suposición (§1) en la próxima US de esa pantalla.
 
 > ⛔ **BLOQUEANTE — ANTES de publicar CUALQUIER comentario en ADO:**
-> Leer COMPLETO `.claude/skills/qa-execution-reporter/SKILL.md` y seguir sus fases en orden.
+> Leer COMPLETO `skills/qa-execution-reporter/SKILL.md` y seguir sus fases en orden.
 > **PROHIBIDO** redactar el comentario directamente desde esta sección ni desde ningún otro skill.
 > El formato, el proceso de upload y las reglas de publicación viven ÚNICAMENTE en `qa-execution-reporter`.
 > No hay excepciones.
@@ -270,7 +270,7 @@ Capturar screenshots por criterio (filosofía en `AGENTS.md §9`). Mínimo: un s
 
 > ⛔ **Este archivo NO define ninguna plantilla de comentario.** El formato del comentario, el
 > proceso de upload (PAT, REST, attachments) y las reglas de publicación viven ÚNICAMENTE en
-> `.claude/skills/qa-execution-reporter/SKILL.md` (bloqueante de §5). Cualquier plantilla aquí
+> `skills/qa-execution-reporter/SKILL.md` (bloqueante de §5). Cualquier plantilla aquí
 > sería un duplicado destinado a desincronizarse.
 
 **Orden de upload (resumen conceptual — detalle en el skill):** (1) subir cada PNG como attachment → recibir URL;

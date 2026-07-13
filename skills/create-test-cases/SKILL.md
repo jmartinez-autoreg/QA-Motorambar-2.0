@@ -130,6 +130,7 @@ Ejemplos reales:
 - **Resultados específicos**: qué texto aparece, qué elementos se habilitan/deshabilitan, qué cambia en pantalla
 - **Español correcto** con tildes y ortografía impecable (á, é, í, ó, ú, ñ)
 - **Nombrar elementos UI exactamente** como aparecen en pantalla (botones, campos, labels)
+- **Formato de resultados esperados largos** — cuando el resultado esperado tiene múltiples elementos observables (>2), usar listas con viñetas (`-`) para mejorar legibilidad. Cada elemento observable en su propia línea. Ver §4.1.
 
 ### NO hacer (prohibido)
 
@@ -140,6 +141,47 @@ Ejemplos reales:
 - ❌ Crear TCs separados para escenarios que ocurren en la misma pantalla/popup y comparten el mismo flujo de navegación
 - ❌ Resultados vagos como "funciona correctamente" o "se actualiza la página"
 - ❌ Usar comillas dobles `"` dentro del texto de pasos (causa problemas de escape XML/JSON) — preferir comillas simples o describir sin comillas
+
+### 4.1 Formato de resultados esperados largos — legibilidad con listas
+
+Cuando un resultado esperado incluye **3 o más elementos observables** (pantallas, mensajes, campos, estados), usar listas con viñetas (`-`) en lugar de texto corrido. Esto mejora la legibilidad y facilita la ejecución.
+
+**❌ Mal (difícil de leer):**
+```
+El sistema abre una nueva pestaña del Portal Distribuidor con la sesión activa, mostrando nuevamente el Dashboard sin solicitar reautenticación (SSO funcionando correctamente).
+```
+
+**✅ Bien (legible con listas):**
+```
+- El sistema abre una nueva pestaña del Portal Distribuidor con la sesión activa
+- Muestra nuevamente el Dashboard sin solicitar reautenticación (SSO funcionando correctamente)
+```
+
+**❌ Mal (bloque largo):**
+```
+Tras hacer clic en botón 'Iniciar Sesión', el sistema redirige a la página de inicio de Autoreg mostrando 'Inicio: Bienvenido'. En la barra superior se visualiza: Usuario (j.distribuidor), Rol (Distribuidor), Fecha actual, Balance, y botones 'Perfil de Seguridad' y 'Salida'. En el body se presenta la sección 'Datos y Documentos' con el botón 'Portal Distribuidor' visible.
+```
+
+**✅ Bien (estructura clara con listas anidadas):**
+```
+Tras hacer clic en 'Iniciar Sesión':
+- El sistema redirige a la página de inicio de Autoreg
+- Muestra 'Inicio: Bienvenido'
+- En la barra superior se visualiza:
+  - Usuario (j.distribuidor)
+  - Rol (Distribuidor)
+  - Fecha actual
+  - Balance
+  - Botones: 'Perfil de Seguridad', 'Salida'
+- En el body se presenta la sección 'Datos y Documentos' con el botón 'Portal Distribuidor' visible
+```
+
+**Regla práctica:**
+- **1-2 elementos observables** → texto corrido simple
+- **3+ elementos observables** → lista con viñetas
+- **Elementos agrupados** (ej. varios campos en una sección) → listas anidadas con indentación
+
+---
 
 ### Niveles de detalle de las acciones (Tabla 5, GUÍA-QA-Redacción de casos de pruebas v1.00 §4.3)
 

@@ -1,0 +1,20 @@
+node_modules/
+test-results/
+playwright-report/
+dist/
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+results/
+TPlans/results/
+
+# Local scratch workspace (notes, drafts, temp analysis - never synced)
+.workspace/
+
+# Credentials — nunca versionar archivos de entorno
+.env
+.env.*
+!.env.playwright.example

@@ -66,7 +66,7 @@ npx github:jmartinez-autoreg/QA-TOOLS-TEMPLATE
 
 Esto descarga e instala automáticamente, **todo dentro de la carpeta de tu proyecto** (ya no en carpetas globales del sistema):
 - Los archivos de configuración del agente (`CLAUDE.md`, `copilot-instructions.md`, reglas)
-- Los skills (capacidades del agente) en `.claude/skills/`
+- Los skills (capacidades del agente) en `skills/`
 - Los agentes en `.claude/agents/` (Claude Code) y `.github/agents/` (GitHub Copilot)
 - La carpeta `context/` (`CONTEXT.md`, `UI-UX.md`, `screenshots/`) para el contexto de TU proyecto
 
@@ -125,7 +125,7 @@ del proyecto en `context/`:
 
 ### Si usas Zoho Projects para registrar horas
 
-Abre el archivo: `.claude/skills/zoho_timelog/SKILL.md`
+Abre el archivo: `skills/zoho_timelog/SKILL.md`
 
 Busca la sección **"Contexto del Proyecto"** y reemplaza los valores entre `{{}}` con los de tu empresa:
 
@@ -278,7 +278,7 @@ Para Zoho (registro de horas):
 
 ## 🧩 Skills disponibles
 
-Los skills son las "capacidades" del agente. Se instalan automáticamente en `.claude/skills/` dentro de tu proyecto.
+Los skills son las "capacidades" del agente. Se instalan automáticamente en `skills/` dentro de tu proyecto.
 
 | Skill | ¿Para qué sirve? | El agente lo usa cuando dices... |
 |-------|-----------------|----------------------------------|
@@ -303,7 +303,7 @@ Si hay una nueva versión disponible:
 npx github:jmartinez-autoreg/QA-TOOLS-TEMPLATE --force
 ```
 
-Esto actualiza los archivos del workspace, los skills (`.claude/skills/`) y los agentes
+Esto actualiza los archivos del workspace, los skills (`skills/`) y los agentes
 (`.claude/agents/`, `.github/agents/`). Tu carpeta `context/` **nunca se sobreescribe** —
 tu conocimiento del proyecto está a salvo aunque uses `--force`.
 

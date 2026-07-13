@@ -47,18 +47,21 @@ Copia este bloque por cada pantalla nueva:
 - **Notas para TCs:** Tras login exitoso, redirige a menú de Autoreg con apps disponibles según rol
 ---
 
-## Autoreg > Menú Post-Login
-- **Ruta/URL:** Autoreg (post-login)
+## Autoreg > Inicio Post-Login
+- **Ruta/URL:** Autoreg (post-login) — Inicio: Bienvenido
 - **Cómo se llega aquí:** Tras hacer login exitoso en Autoreg
 - **Elementos clave:**
   | Elemento | Tipo | Texto/label literal | Comportamiento |
   |---|---|---|---|
-  | Menú Lateral | sidebar | lista de aplicaciones disponibles | navegación entre apps |
-  | Botón Portal | botón/tarjeta | "Portal de Distribución de Vehículos" o ícono | redirige a Portal Distribuidor |
-  | Avatar Usuario | componente | nombre y email del usuario | muestra info de sesión |
-- **Estados:** menú expandido / menú colapsado
-- **Screenshot:** ![menu-autoreg-post-login](screenshots/Distribuidor/Menu%20en%20autoreg%20post%20login%20+%20boton%20que%20redirige%20a%20Portal%20Distribuidor.png)
-- **Notas para TCs:** Punto de acceso a todas las aplicaciones del usuario
+  | Barra Superior | header | Usuario, Rol, Fecha, Balance, "Perfil de Seguridad", "Salida" | info de sesión y acciones globales |
+  | Logo | imagen | "portaldevehiculos.com" | branding central |
+  | Título Inicio | heading | "Inicio: Bienvenido" | — |
+  | Secciones | cards/tarjetas | organizadas por permisos del rol (ej. "Datos y Documentos", "Consultas", "Registros") | agrupan funcionalidades |
+  | Botón Portal Distribuidor | botón | "Portal Distribuidor" (dentro de sección "Datos y Documentos") | redirige a Portal Motorambar |
+  | Otras opciones | botones | nativas de Autoreg PDV (ej. "Consulta Vehículo", "Registro de Autos Lote", etc.) | funcionalidades de Autoreg |
+- **Estados:** según rol del usuario — Distribuidor/Consulta Distribuidor solo ven sección "Datos y Documentos" con botón "Portal Distribuidor"
+- **Screenshot:** ![autoreg-post-login](screenshots/Distribuidor/Menu%20en%20autoreg%20post%20login%20+%20boton%20que%20redirige%20a%20Portal%20Distribuidor.png)
+- **Notas para TCs:** Las opciones visibles dependen del rol. Solo el botón "Portal Distribuidor" redirige al portal de Motorambar — las demás son funcionalidades nativas de Autoreg PDV.
 ---
 
 ## Portal Distribuidor > Dashboard

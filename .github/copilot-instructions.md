@@ -9,7 +9,7 @@
 3. **`context/UI-UX.md`** — mapa de pantallas reales; obligatorio antes de redactar steps de un TC.
 
 Si `context/CONTEXT.md` sigue con placeholders o `context/UI-UX.md` no tiene pantallas documentadas,
-ofrecer ejecutar el skill `project-onboarding` (`.claude/skills/project-onboarding/SKILL.md`).
+ofrecer ejecutar el skill `project-onboarding` (`skills/project-onboarding/SKILL.md`).
 
 ---
 

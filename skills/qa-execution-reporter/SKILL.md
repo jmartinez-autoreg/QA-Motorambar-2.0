@@ -94,7 +94,7 @@ Ciclo de vida oficial de un Test Case durante su ejecución en ADO Test Plans:
 1. En el paso (STEP) que falla, agregar un comentario con el título del defecto a registrar.
 2. Marcar el **paso** como `Failed (x)`.
 3. Adjuntar evidencia (imagen requerida; documento o video opcional).
-4. `Save` y `Create bug` — usar los formatos de `.claude/skills/qa_tester/SKILL.md` § Registrar Bug / Defecto
+4. `Save` y `Create bug` — usar los formatos de `skills/qa_tester/SKILL.md` § Registrar Bug / Defecto
    (Tipo de desviación + Formato 1/2 + mensaje a DEV).
 5. Marcar el **caso de pruebas** como `Failed`.
 

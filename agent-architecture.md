@@ -2,7 +2,7 @@
 
 ## Arquitectura real: Skills como agentes
 
-Cada agente es un archivo SKILL.md en `.claude/skills/<name>/SKILL.md`.
+Cada agente es un archivo SKILL.md en `skills/<name>/SKILL.md`.
 Los agentes se comunican via JSON en `.agent-state/` — no hay estado volátil en memoria del LLM.
 
 > ⚖️ **Arbitraje de flujos (Escenario A):** el flujo **por defecto** del routing (QA-PRO §3) es

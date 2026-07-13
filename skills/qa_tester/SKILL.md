@@ -556,7 +556,7 @@ Ejemplo — datos + login (dos rows separados):
 
 > ⛔ **BLOQUEANTE — este skill NO define el formato del comentario de evidencia ni su proceso de upload.**
 > Para publicar CUALQUIER resultado/evidencia en la US, leer COMPLETO
-> `.claude/skills/qa-execution-reporter/SKILL.md` y seguir sus fases en orden: formato del
+> `skills/qa-execution-reporter/SKILL.md` y seguir sus fases en orden: formato del
 > comentario, extracción del PAT, upload de attachments, confirmación con el usuario
 > (AGENTS.md §8.11) y verificación post-publicación. Aplica igual con o sin Test Plan —
 > el skill cubre ambos casos.

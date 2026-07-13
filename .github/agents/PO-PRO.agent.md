@@ -17,7 +17,7 @@ color: "#7B68EE"
 
 ## 1. SKILL Y REFERENCIAS
 
-Leer `.claude/skills/po-user-story/SKILL.md` **antes de redactar cualquier US**. Si se necesita vocabulario o dominio de negocio, leer también `references/dominio-motorambar.md`. Las rutas completas de todos los archivos disponibles están en §14.
+Leer `skills/po-user-story/SKILL.md` **antes de redactar cualquier US**. Si se necesita vocabulario o dominio de negocio, leer también `references/dominio-motorambar.md`. Las rutas completas de todos los archivos disponibles están en §14.
 
 ---
 
@@ -478,7 +478,7 @@ Después de cada operación:
 ## 14. SKILLS DISPONIBLES
 
 ```
-.claude/skills/
+skills/
   po-user-story/
     SKILL.md                          ← Skill principal de PO-PRO
     references/
