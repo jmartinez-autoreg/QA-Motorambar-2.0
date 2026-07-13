@@ -96,6 +96,8 @@ Se abre pantalla con botón cancelar y aceptar.
 4. Si una pantalla **NO está documentada** en `UI-UX.md` → **DETENER** y solicitar screenshot o inspección real vía MCP Browser antes de continuar
 5. Usar **solo** los términos/nombres documentados — nunca inferir ni suponer
 
+> ⛔ **NUNCA preguntar al usuario "¿la pantalla X está documentada en UI-UX.md?"** — siempre leer `context/UI-UX.md` y verificar tú mismo (paso 2). Preguntar = fallo del checkpoint.
+
 > Violación de este checkpoint = fallo crítico → activar REGLA 1 automáticamente.
 
 ---
@@ -320,6 +322,8 @@ Si ninguna opción funciona → usar comentario MCP sin imágenes inline como fa
 | Cerrar US sin que todos los TCs pasen | `Closed` solo si todo pasa; si no, Bug + `QA NOT PASSED` |
 | Cerrar US que estrenó/cambió una pantalla sin actualizar `context/UI-UX.md` | Checkpoint de contexto §5.4 antes de `Closed` |
 | Usar un screenshot del usuario y no ingestarlo a `context/` | Copiarlo a `context/screenshots/` + entrada en `UI-UX.md` (AGENTS.md §8.12) |
+| Preguntar al usuario "¿ya existe un Test Plan?" | Ejecutar Fase 0 con MCP y decidir con el resultado real |
+| Preguntar al usuario "¿la pantalla está documentada en UI-UX.md?" | Leer `context/UI-UX.md` y verificar directamente |
 
 > Los anti-patrones **globales** (un TC por criterio, screenshot mecánico, inventar datos, etc.) están en `AGENTS.md §11`.
 

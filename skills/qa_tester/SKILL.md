@@ -101,7 +101,7 @@ Al recibir una US el agente DEBE seguir este orden:
 ```
 
 > ⚠️ Esta fase es obligatoria — nunca saltar aunque el usuario diga "crea el TP".
-> Si el usuario insiste después del aviso → confirmar explícitamente antes de proceder.
+> ⛔ **NUNCA preguntar al usuario "¿ya existe un Test Plan?"** — siempre ejecutar los pasos 1-3 y decidir con el resultado real del MCP. Preguntar = fallo de la fase.
 
 ---
 
