@@ -48,40 +48,58 @@
 - **Pantalla bloqueada:** si el token de sesión es revocado o caduca, se muestra "Acceso Bloqueado" con mensaje de contactar al administrador
 
 ---
-Rol | Permisos / Pantallas disponibles |
+
+## Roles y Permisos
+
+| Rol | Permisos / Pantallas disponibles |
 |-----|-----------------------------------|
 | **Distribuidor** | Dashboard, Vehículos Importados, Importar Vehículos, Importar CPA, Historial de Importaciones, Historial de CPA, Editar/Ver Vehículos, Reportes, Notificaciones |
-| **Cliente (Dealer)** | _(pendiente — verificar en repo)_ |
-| **Cliente (Banco)** | _(pendiente — verificar en repo)_ |
+| **Cliente (Dealer)** | ⚠️ **PENDIENTE** — documentar qué pantallas/acciones tienen acceso |
+| **Cliente (Banco)** | ⚠️ **PENDIENTE** — documentar qué pantallas/acciones tienen acceso |
 | **SysAdmin** | Todas las pantallas + sección de Administración (Usuarios, Plantillas de Importación, Plantilla CO, Reglas de Completitud, Firma Digital, Favoritos, Notificaciones Diarias) |
 
-> **Nota:** Los 4 roles están definidos en el repo (`C:\Users\Jhon Martinez\Documents\Motorambar\Project\Motorambar`). Pendiente documentar permisos específicos de Cliente Dealer y Cliente Banco.
-|-----------|------------------|
-| [Rol con permiso] | [Qué aparece en UI] |
-| [Rol sin permiso] | [Qué NO aparece en UI] |
+> **Nota:** Los 4 roles están definidos en el repo del proyecto. Para documentar los roles Cliente, navegar la app con esos usuarios o consultar el código en `C:\Users\Jhon Martinez\Documents\Motorambar\Project\Motorambar`.
 
----Dashboard** — Pantalla inicial con resumen de vehículos importados, estadísticas y acceso rápido a generación de reportes
+---
+
+## Pantallas Principales
+
+- **Dashboard** — Pantalla inicial con resumen de vehículos importados, estadísticas y acceso rápido a generación de reportes
 - **Vehículos Importados** — Grid con todos los vehículos importados, filtros avanzados (por fechas, VIN, estado), acciones batch e individuales (Editar, Ver, Reportar), expansión de VIN
 - **Importar Vehículos** — Flujo de carga masiva de vehículos (archivo Excel/CSV) con validación y progreso
 - **Importar CPA** — Flujo multi-step (selección de archivo → progreso → resumen) para importar Certificados de Pre-Autorización
 - **Historial de Importaciones** — Registro histórico de todas las importaciones de vehículos realizadas
 - **Historial de CPA** — Registro histórico de todas las importaciones de CPA con filas de detalle
 - **Editar/Ver Vehículo** — Pantalla de detalle de un vehículo, con modo Vista (solo lectura) y modo Edición (campos editables según rol)
-- **Reportes** — GeneAutoregPR`
-- **Proyecto:** `Motorambar`
-- **URL:** `https://dev.azure.com/AutoregPR/Motorambar`
-- **Usuario QA:** `jhon.martinez@autoregpr.com` _(inferido — confirmar si difiere)_
+- **Reportes** — Generación de reportes desde Dashboard o Vehículos Importados
+- **Administración** (solo SysAdmin) — Gestión de tenants, usuarios, plantillas, reglas de completitud, firma digital, favoritos, notificaciones diarias
 
-- **[Módulo 1]** — [descripción breve]
-- **[Módulo 2]** — [descripción breve]
+---
+
+## Módulos del Sistema
+
+- **Dashboard** — Pantalla inicial con resumen y accesos rápidos
+- **Vehículos** — Gestión completa: importar, listar, editar, historial
+- **CPA** — Importación y historial de Certificados de Pre-Autorización
+- **Administración** — Gestión de configuración del sistema (solo SysAdmin)
+- **Reportes** — Generación de reportes desde diferentes contextos
 
 ---
 
 ## Organización ADO
 
-- **Organización:** `[ORG_ADO]`
-- **Proyecto:** `[PROYECTO_ADO]`
-- *CPA` | Certificado de Pre-Autorización |
+- **Organización:** `AutoregPR`
+- **Proyecto:** `Motorambar`
+- **URL:** `https://dev.azure.com/AutoregPR/Motorambar`
+- **Usuario QA:** `jhon.martinez@autoregpr.com`
+
+---
+
+## Terminología Literal (NO cambiar nombres)
+
+| Término en sistema | Descripción |
+|--------------------|-------------|
+| `CPA` | Certificado de Pre-Autorización |
 | `CO` | Certificado de Origen |
 | `VIN` | Vehicle Identification Number (Número de Identificación del Vehículo) |
 | `Vehículos Importados` | Listado principal de vehículos en el sistema |
@@ -95,24 +113,15 @@ Rol | Permisos / Pantallas disponibles |
 | `Cliente (Banco)` | Rol de cliente tipo institución bancaria |
 | `SysAdmin` | Rol de administrador del sistema |
 | `Reglas de Completitud` | Configuración de validaciones de datos de vehículos |
-| `FPortal Distribuidor:** React + Next.js
+| `Plantilla de Importación` | Template para carga de vehículos |
+| `Plantilla CO` | Template para Certificado de Origen |
+
+---
+
+## Tecnología
+
+- **Frontend Portal Distribuidor:** React + Next.js
 - **Backend:** .NET
 - **Base de Datos:** PostgreSQL
 - **Infraestructura:** Azure (completo)
-- **Repo local:** `C:\Users\Jhon Martinez\Documents\Motorambar\Project\Motorambar`te para carga de vehículos |
-| `Plantilla CO` | Template para Certificado de Origen
----
-
-## Terminología Literal (NO cambiar nombres)
-
-| Término en sistema | Descripción |
-|--------------------|-------------|
-| `[Término 1]` | [Qué es] |
-| `[Término 2]` | [Qué es] |
-
----
-
-## Tecnología Frontend
-
-- **[Portal 1]:** [Framework / stack]
-- **[Portal 2]:** [Framework / stack]
+- **Repo local:** `C:\Users\Jhon Martinez\Documents\Motorambar\Project\Motorambar`
