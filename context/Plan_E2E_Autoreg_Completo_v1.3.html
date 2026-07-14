@@ -248,24 +248,53 @@
             
             .container {
                 box-shadow: none;
+                max-width: 100%;
             }
             
             .phase-header {
                 page-break-before: always;
-                margin: 0 0 30px 0;
+                page-break-after: avoid;
+                margin: 0 0 20px 0;
+                padding: 15px 20px;
             }
             
             table {
                 page-break-inside: avoid;
+                page-break-before: auto;
+                font-size: 10pt;
             }
             
-            h2 {
+            thead {
+                display: table-header-group;
+            }
+            
+            tbody tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            h2, h3, h4 {
                 page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .info-box, .note-box, .success-box {
+                page-break-inside: avoid;
+                page-break-before: auto;
+            }
+            
+            .toc {
+                page-break-after: always;
+            }
+            
+            .signature-section {
+                page-break-before: always;
             }
         }
 
         @page {
-            margin: 2cm;
+            margin: 1.5cm;
+            size: letter;
         }
     </style>
 </head>
