@@ -251,14 +251,19 @@ Las PRECONDs se numeran **secuencialmente desde 0**. Incluir **solo** las catego
 > ⚠️ **FORMATO INTERNO CON SHIFT+ENTER:** Cada PRECOND ocupa un solo row en ADO, pero internamente usa saltos de línea (Shift+Enter) para separar cada campo. El resultado visual en ADO es:
 > ```
 > PRECOND 1: Login
-> - Usuario: jmartinez
+> - Usuario: usuario01
 > - Rol: Administrador
-> - Acceso portal: Autoreg
+> - Acceso portal: MiPortal
 > - Acceso módulo: Vehículos
 > ```
 > Todo eso va en **un solo step row**. Los saltos son Shift+Enter dentro del campo Action, no rows separados.
+> `Acceso portal` es el nombre del portal/aplicación tal como lo ve el usuario en el login real
+> (consultar `context/UI-UX.md` o `context/CONTEXT.md` de este proyecto — nunca copiar el nombre de
+> la organización de Azure DevOps ni ningún otro valor de ejemplo de este skill).
 > - ❌ Múltiples rows de ADO para una misma PRECOND
 > - ❌ Todo en una sola línea plana: `PRECOND 1: Login - Usuario: X - Rol: Y - Acceso portal: Z - Acceso módulo: W`
+> - ❌ Incluir `Contraseña` o `URL` como campo del PRECOND — el Login solo lleva Usuario/Rol/Acceso portal/Acceso módulo (AGENTS.md §8.1: nunca exponer credenciales)
+> - ❌ Adivinar `Acceso portal` cuando no está documentado (ej. dejarlo con `?`) — si `context/UI-UX.md` no lo tiene, preguntar al usuario (AGENTS.md §8.1 y §8.2)
 > - ✅ Un solo row con Shift+Enter entre cada campo
 >
 > ⚠️ **SIN EXPECTED RESULT:** Las filas de PRECOND en ADO llevan únicamente el campo **Action** con el texto de la precondición. El campo **Expected Result debe quedar vacío** en todas las filas de PRECOND. Solo los pasos de ejecución llevan Expected Result.
