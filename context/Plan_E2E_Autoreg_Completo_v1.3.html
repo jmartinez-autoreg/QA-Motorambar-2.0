@@ -241,62 +241,64 @@
             margin-top: 60px;
         }
 
-        @media print {
+                @media print {
             body {
                 background: white;
             }
-            
             .container {
                 box-shadow: none;
                 max-width: 100%;
+                margin: 0;
+                padding: 0;
             }
-            
+            /* Elements that MUST NOT break */
+            table, tr, td, th, .info-box, .note-box, .success-box, img, svg {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            /* Elements that MUST stay with next element */
+            h1, h2, h3, h4, h5, h6, .phase-header {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            /* Elements that MUST start on a new page */
             .phase-header {
-                page-break-before: always;
-                page-break-after: avoid;
-                margin: 0 0 20px 0;
-                padding: 15px 20px;
+                page-break-before: always !important;
+                break-before: page !important;
+                margin-top: 0 !important;
             }
-            
-            table {
-                page-break-inside: avoid;
-                page-break-before: auto;
-                font-size: 10pt;
-            }
-            
-            thead {
-                display: table-header-group;
-            }
-            
-            tbody tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-            
-            h2, h3, h4 {
-                page-break-after: avoid;
-                page-break-inside: avoid;
-            }
-            
-            .info-box, .note-box, .success-box {
-                page-break-inside: avoid;
-                page-break-before: auto;
-            }
-            
             .toc {
-                page-break-after: always;
+                page-break-after: always !important;
+                break-after: page !important;
             }
-            
             .signature-section {
-                page-break-before: always;
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+            /* Table formatting */
+            thead {
+                display: table-header-group !important;
+            }
+            tfoot {
+                display: table-footer-group !important;
+            }
+            table {
+                font-size: 9pt !important; /* Smaller to fit better */
+                width: 100% !important;
+            }
+            /* Hide unnecessary UI elements */
+            header .version {
+                border: 1px solid #333;
+                background: none;
+                color: #333;
             }
         }
-
         @page {
-            margin: 1.5cm;
+            margin: 1.5cm 1.5cm 2cm 1.5cm;
             size: letter;
-        }
-    </style>
+        }</style>
 </head>
 <body>
     <div class="container">
