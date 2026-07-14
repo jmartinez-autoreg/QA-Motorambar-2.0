@@ -638,7 +638,7 @@
                     <tr>
                         <td>CPA-IMP-08</td>
                         <td>Validar que CPA importado actualiza estado de completitud del vehículo</td>
-                        <td>Si regla requiere CPA: vehículo 🔺 → 🕐 o ✅ según agrupación CL</td>
+                        <td>Si regla requiere CPA: vehículo cambia de Pendiente a Completado o Liberado según agrupación CL</td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -1253,7 +1253,7 @@
                     <tr>
                         <td>DASH-02</td>
                         <td>Visualizar KPIs principales (vehículos importados, pendientes, liberados)</td>
-                        <td>Números actualizados, íconos de estado visibles (🔺🕐✅)</td>
+                        <td>Números actualizados, íconos de estado visibles (pendiente/completado/liberado)</td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -1425,9 +1425,9 @@
                 
                 <p style="margin-top: 15px;"><strong>Estados universales:</strong></p>
                 <ul style="margin-top: 5px;">
-                    <li>🔺 <strong>Pendiente:</strong> Falta documentación requerida</li>
-                    <li>🕐 <strong>Completado (esperando):</strong> Documentos completos PERO esperando que otros vehículos de su Credit Letter se completen (solo si agrupación está activada)</li>
-                    <li>✅ <strong>Liberado:</strong> Documentos completos + Credit Letter liberada (si aplica) → <strong>visible para Cliente</strong></li>
+                    <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-right: 5px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg><strong>Pendiente:</strong> Falta documentación requerida</li>
+                    <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-right: 5px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg><strong>Completado (esperando):</strong> Documentos completos PERO esperando que otros vehículos de su Credit Letter se completen (solo si agrupación está activada)</li>
+                    <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-right: 5px;"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg><strong>Liberado:</strong> Documentos completos + Credit Letter liberada (si aplica) → <strong>visible para Cliente</strong></li>
                 </ul>
             </div>
 
@@ -1525,118 +1525,118 @@
                     <tr>
                         <td>REGLA-01</td>
                         <td>Importar 5 vehículos con mismo Credit Letter Number (CL#)</td>
-                        <td>Todos muestran icono 🔺 (Pendiente) en columna de estado</td>
+                        <td>Todos muestran icono de Pendiente (triángulo amarillo) en columna de estado</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-02</td>
                         <td>Completar documentos (CO + CPA) de 1 vehículo del grupo</td>
-                        <td>Ese vehículo cambia a 🕐 (Completado esperando), otros 4 siguen en 🔺</td>
+                        <td>Ese vehículo cambia a Completado esperando (reloj azul), otros 4 siguen Pendientes</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-03</td>
                         <td>Completar documentos de 3 vehículos más (total 4 de 5 completos)</td>
-                        <td>Los 4 con docs completos muestran 🕐, el 5to (incompleto) sigue en 🔺</td>
+                        <td>Los 4 con docs completos muestran Completado esperando (reloj azul), el 5to (incompleto) sigue Pendiente</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-04</td>
                         <td>Completar documentos del 5to vehículo (último del grupo)</td>
-                        <td><strong>TODOS los 5 cambian a ✅ (Liberados)</strong> simultáneamente</td>
+                        <td><strong>TODOS los 5 cambian a Liberado (círculo verde con check)</strong> simultáneamente</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-05</td>
                         <td>Validar que Credit Letter queda marcada como "liberada" permanentemente</td>
-                        <td>Importar nuevo vehículo con mismo CL# → completar docs → ✅ inmediato (no espera grupo)</td>
+                        <td>Importar nuevo vehículo con mismo CL# → completar docs → Liberado inmediato (no espera grupo)</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-06</td>
                         <td>Modificar regla de completitud (desactivar CO) DESPUÉS de liberar grupo</td>
-                        <td>Credit Letter liberada NO se ve afectada, sigue ✅, modificación NO es retroactiva</td>
+                        <td>Credit Letter liberada NO se ve afectada, sigue Liberada, modificación NO es retroactiva</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-07</td>
                         <td>Liberar vehículo manualmente (botón "Liberar" sin completar docs)</td>
-                        <td>Vehículo cambia a ✅ inmediatamente, bypasea validaciones de docs y agrupación</td>
+                        <td>Vehículo cambia a Liberado inmediatamente, bypasea validaciones de docs y agrupación</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-08</td>
                         <td>Cliente Dealer intenta ver grid de vehículos</td>
-                        <td>Solo vehículos con ✅ son visibles, los 🔺 y 🕐 NO aparecen en su grid</td>
+                        <td>Solo vehículos Liberados son visibles, los Pendientes y Completados esperando NO aparecen en su grid</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-09</td>
                         <td>Cliente Banco intenta ver grid de vehículos</td>
-                        <td>Solo vehículos con ✅ asignados a su banco son visibles</td>
+                        <td>Solo vehículos Liberados asignados a su banco son visibles</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-10</td>
-                        <td>Distribuidor ve todos los estados (🔺🕐✅) en su grid</td>
-                        <td>Grid muestra los 3 iconos correctamente según estado de cada vehículo</td>
+                        <td>Distribuidor ve todos los estados en su grid</td>
+                        <td>Grid muestra los 3 iconos correctamente: Pendiente (triángulo amarillo), Completado esperando (reloj azul), Liberado (círculo verde)</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-11</td>
-                        <td>Desactivar "Agrupar por CL#" en regla (Admin cambia a ❌)</td>
-                        <td>Nuevos vehículos importados: completar docs → ✅ individual (sin esperar grupo)</td>
+                        <td>Desactivar "Agrupar por CL#" en regla (Admin cambia a desactivado)</td>
+                        <td>Nuevos vehículos importados: completar docs → Liberado individual (sin esperar grupo)</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-12</td>
-                        <td>Con agrupación CL# ❌: importar 3 vehículos mismo CL#</td>
-                        <td>Completar 1 → ese vehículo ✅ inmediato, otros 2 siguen 🔺 (liberación individual)</td>
+                        <td>Con agrupación CL# desactivada: importar 3 vehículos mismo CL#</td>
+                        <td>Completar 1 → ese vehículo Liberado inmediato, otros 2 siguen Pendientes (liberación individual)</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-13</td>
                         <td>Importar vehículo SIN Credit Letter Number (campo vacío/null)</td>
-                        <td>Completar docs → ✅ inmediato (no entra en lógica de agrupación)</td>
+                        <td>Completar docs → Liberado inmediato (no entra en lógica de agrupación)</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-14</td>
-                        <td>Importar 3 vehículos CON CL# + 2 SIN CL# (mismo tenant, agrupación ✅)</td>
-                        <td>Los 2 sin CL#: completar → ✅ individual. Los 3 con CL#: esperan completarse todos</td>
+                        <td>Importar 3 vehículos CON CL# + 2 SIN CL# (mismo tenant, agrupación activa)</td>
+                        <td>Los 2 sin CL#: completar → Liberado individual. Los 3 con CL#: esperan completarse todos</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-15</td>
-                        <td>Validar transición visual 🔺 → 🕐 → ✅ en grid en tiempo real</td>
-                        <td>Iconos actualizan sin refresh, tooltip muestra estado literal ("Pendiente", "Completado esperando", "Liberado")</td>
+                        <td>Validar transición visual Pendiente → Completado → Liberado en grid en tiempo real</td>
+                        <td>Iconos actualizan sin refresh (triángulo amarillo → reloj azul → círculo verde), tooltip muestra estado literal</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-16</td>
-                        <td>Ver badge "COMPLETADO" junto a icono 🕐 en detalle de vehículo</td>
-                        <td>Badge verde "COMPLETADO", tooltip explica: "Esperando liberación de Credit Letter"</td>
+                        <td>Ver badge "COMPLETADO" junto a icono de reloj azul en detalle de vehículo</td>
+                        <td>Badge verde "COMPLETADO", icono reloj azul visible, tooltip explica: "Esperando liberación de Credit Letter"</td>
                         <td></td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>REGLA-17</td>
-                        <td>Intentar enviar a PDV un vehículo en estado 🔺 o 🕐</td>
+                        <td>Intentar enviar a PDV un vehículo en estado Pendiente o Completado esperando</td>
                         <td>Advertencia: "Solo vehículos liberados pueden enviarse a PDV", acción bloqueada</td>
                         <td></td>
                         <td></td>
@@ -1644,7 +1644,7 @@
                     <tr>
                         <td>REGLA-18</td>
                         <td>Liberar grupo de 5 vehículos por lote (batch) completando docs del último</td>
-                        <td>Sistema detecta que todos están completos, cambian a ✅ simultáneamente, CL marcada como liberada</td>
+                        <td>Sistema detecta que todos están completos, cambian a Liberado (círculo verde) simultáneamente, CL marcada como liberada</td>
                         <td></td>
                         <td></td>
                     </tr>
