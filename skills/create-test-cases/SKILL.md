@@ -144,7 +144,7 @@ Ejemplos reales:
 
 ### 4.1 Formato de resultados esperados largos — legibilidad con listas
 
-Cuando un resultado esperado incluye **3 o más elementos observables** (pantallas, mensajes, campos, estados), usar listas con viñetas (`-`) en lugar de texto corrido. Esto mejora la legibilidad y facilita la ejecución.
+Cuando un resultado esperado incluye **2 o más elementos observables** (pantallas, mensajes, campos, estados), usar listas con viñetas (`-`) en lugar de texto corrido. Esto mejora la legibilidad y facilita la ejecución.
 
 **❌ Mal (difícil de leer):**
 ```
@@ -177,8 +177,8 @@ Tras hacer clic en 'Iniciar Sesión':
 ```
 
 **Regla práctica:**
-- **1-2 elementos observables** → texto corrido simple
-- **3+ elementos observables** → lista con viñetas
+- **1 elemento observable** → texto corrido simple
+- **2+ elementos observables** → lista con viñetas
 - **Elementos agrupados** (ej. varios campos en una sección) → listas anidadas con indentación
 
 ---

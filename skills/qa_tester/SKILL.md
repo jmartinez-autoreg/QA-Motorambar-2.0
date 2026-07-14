@@ -279,6 +279,25 @@ Cada paso del TC tiene:
 - **Acción:** Lo que el tester ejecuta (verbo imperativo: "Hacer clic en...", "Ingresar el valor...")
 - **Resultado esperado:** Lo que el usuario ve o puede verificar en la UI (visual/observable, NO comportamiento de backend)
 
+> ⚠️ **Resultado esperado con 2+ elementos observables → lista con viñetas, nunca texto corrido**
+> (detalle completo y más ejemplos en `create-test-cases/SKILL.md` §4.1).
+> ❌ Mal (elementos pegados en una sola oración):
+> ```
+> Sistema presenta la pantalla "Vehículos Importados" con filtros superiores (Buscar por VIN, rango de fechas, Estado CO, Estado CPA, Estado Factura, botón "Más Filtros") y grid con todos los registros disponibles
+> ```
+> ✅ Bien:
+> ```
+> Sistema presenta la pantalla "Vehículos Importados" con:
+> - Filtros superiores:
+>   - Buscar por VIN
+>   - Rango de fechas
+>   - Estado CO
+>   - Estado CPA
+>   - Estado Factura
+> - Botón "Más Filtros"
+> - Grid con todos los registros disponibles
+> ```
+
 ### Reglas de Cobertura
 
 | Criterio | ¿Incluir en TC? |
