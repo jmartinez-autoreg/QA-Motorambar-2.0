@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan E2E Completo — Autoreg | Motorambar v1.3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        header .version {
+            margin-top: 15px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .metadata {
+            background: #f8fafc;
+            padding: 30px 40px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .metadata table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .metadata td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metadata td:first-child {
+            font-weight: 600;
+            color: #475569;
+            width: 200px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        h4 {
+            color: #1e40af;
+            margin: 20px 0 10px 0;
+            font-size: 1.1em;
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 20px 30px;
+            margin: 40px -40px 30px -40px;
+            font-size: 1.5em;
+            font-weight: 300;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+        .note-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .summary-table {
+            background: white;
+            border: 2px solid #3b82f6;
+        }
+
+        .summary-table th {
+            background: #3b82f6;
+        }
+
+        .signature-section {
+            margin: 50px 0;
+            padding: 30px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .signature-block {
+            display: inline-block;
+            width: 45%;
+            margin: 20px 2%;
+            vertical-align: top;
+        }
+
+        .signature-line {
+            border-top: 2px solid #333;
+            margin-top: 60px;
+            padding-top: 10px;
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .toc {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+            color: #3b82f6;
+        }
+
+        footer {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .phase-header {
+                page-break-before: always;
+                margin: 0 0 30px 0;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+
+        @page {
+            margin: 2cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plan y Checklist de Pruebas End-to-End</h1>
+            <div class="subtitle">Módulo Distribuidor — Portal de Distribución de Vehículos</div>
+            <div class="version">VERSIÓN 1.3 — AUTOREG COMPLETO (Con Administración)</div>
+        </header>
+
+        <div class="metadata">
+            <table>
+                <tr>
+                    <td>Preparado por:</td>
+                    <td>Kevin Morales (Motorambar) + Equipo QA Autoreg</td>
+                </tr>
+                <tr>
+                    <td>Fecha:</td>
+                    <td>14 de julio de 2026</td>
+                </tr>
+                <tr>
+                    <td>Estatus:</td>
+                    <td>Pendiente de aprobación</td>
+                </tr>
+                <tr>
+                    <td>Versión:</td>
+                    <td>1.3 — Incluye Reglas de Completitud y Liberación + Administración completa</td>
+                </tr>
+                <tr>
+                    <td>Audiencia:</td>
+                    <td>Autoreg (Soporte y QA Interno)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <div class="toc">
+                <h3>📑 Tabla de Contenido</h3>
+                <ul>
+                    <li><a href="#proposito">1. Propósito y alcance</a></li>
+                    <li><a href="#instrucciones">2. Instrucciones de ejecución</a></li>
+                    <li><a href="#prerrequisitos">3. Prerrequisitos y datos de prueba</a></li>
+                    <li><a href="#fase1">4. FASE 1: Importación de datos e historiales (33 escenarios)</a></li>
+                    <li><a href="#fase2">5. FASE 2: Grid de Vehículos Importados e integración PDV (42 escenarios)</a></li>
+                    <li><a href="#fase3">6. FASE 3: CO, reportes y Dashboard Ejecutivo (21 escenarios)</a></li>
+                    <li><a href="#fase4">7. FASE 4: Regresión end-to-end y escenarios transversales (14 escenarios)</a></li>
+                    <li><a href="#fase5">8. FASE 5: Reglas de Completitud y Liberación (26 escenarios)</a>
+                        <ul style="margin-left: 20px;">
+                            <li><a href="#fase5-1">8.1 Administración de Reglas (8 escenarios)</a></li>
+                            <li><a href="#fase5-2">8.2 Comportamiento de Liberación (18 escenarios)</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#criterios">9. Criterios de entrada y salida</a></li>
+                    <li><a href="#defectos">10. Gestión de defectos</a></li>
+                    <li><a href="#estabilizacion">11. Proceso de estabilización</a></li>
+                    <li><a href="#resumen">12. Resumen de ejecución</a></li>
+                    <li><a href="#aprobaciones">13. Aprobaciones</a></li>
+                </ul>
+            </div>
+
+            <h2 id="proposito">1. Propósito y alcance</h2>
+            <p>Este plan de pruebas End-to-End tiene como objetivo validar el funcionamiento completo del <strong>Módulo Distribuidor</strong> en el Portal de Distribución de Vehículos de Motorambar, asegurando que todos los flujos críticos de negocio operen correctamente en conjunto.</p>
+            
+            <h3>Alcance funcional (según las pantallas del portal):</h3>
+            <ul>
+                <li><strong>Dashboard Ejecutivo:</strong> Visualización de KPIs, estadísticas de vehículos y accesos rápidos</li>
+                <li><strong>Vehículos Importados:</strong> Grid con búsqueda, filtros avanzados, vistas personalizadas, acciones individuales y batch</li>
+                <li><strong>Importar Vehículos:</strong> Carga masiva desde archivo Excel/CSV con validación en tiempo real</li>
+                <li><strong>Historial de Importaciones:</strong> Registro completo de importaciones de vehículos realizadas</li>
+                <li><strong>Importar CPA:</strong> Flujo multi-step para importación de Certificados de Pre-Autorización (batch PDF)</li>
+                <li><strong>Historial de CPA:</strong> Registro histórico de importaciones de CPA con detalle expandible</li>
+                <li><strong>Ver/Editar Vehículo:</strong> Pantalla de detalle con modo vista y modo edición según permisos</li>
+                <li><strong>Generación de CO:</strong> Creación, edición y regeneración de Certificados de Origen</li>
+                <li><strong>Reportes:</strong> Generación y exportación de reportes desde diferentes contextos</li>
+                <li><strong>Integración con PDV:</strong> Sincronización y envío de datos hacia Portal de Vehículos</li>
+                <li><strong>Administración (SysAdmin):</strong> Usuarios, Plantillas, Reglas de Completitud, Firma Digital, Favoritos, Notificaciones</li>
+                <li><strong>Escenarios transversales:</strong> Multi-idioma (ES/EN), Dark Theme, notificaciones, auditoría, concurrencia</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Roles involucrados:</strong>
+                <ul style="margin-top: 10px;">
+                    <li><strong>Distribuidor:</strong> Rol principal — acceso a Dashboard, Vehículos, Importaciones, CPA, Historiales, Reportes</li>
+                    <li><strong>Cliente (Dealer/Banco):</strong> Rol de consulta — acceso limitado a vehículos liberados</li>
+                    <li><strong>SysAdmin:</strong> Todas las pantallas + sección de Administración completa</li>
+                </ul>
+            </div>
+
+            <h2 id="instrucciones">2. Instrucciones de ejecución</h2>
+            <ol>
+                <li><strong>Ambiente:</strong> Ejecutar en <code>https://motorambartest.portaldevehiculos.com</code></li>
+                <li><strong>Secuencia:</strong> Seguir el orden de las fases (1 → 2 → 3 → 4 → 5)</li>
+                <li><strong>Prerequisitos:</strong> Verificar la sección 3 antes de iniciar cada fase</li>
+                <li><strong>Evidencia:</strong> Capturar screenshots de resultados esperados, especialmente para estados visuales (🔺 🕐 ✅)</li>
+                <li><strong>Defectos:</strong> Reportar en Azure DevOps con plantilla del Anejo A</li>
+                <li><strong>Estatus:</strong> Marcar cada escenario como <strong>PASSED</strong> o <strong>FAILED</strong> en la columna correspondiente</li>
+            </ol>
+
+            <div class="note-box">
+                <strong>⚠️ Nota importante:</strong> Los escenarios marcados como <em>"si aplica"</em> dependen de reglas de negocio o configuraciones específicas del tenant — ejecutar solo si están habilitadas en el ambiente de pruebas.
+            </div>
+
+            <h2 id="prerrequisitos">3. Prerrequisitos y datos de prueba</h2>
+            <ul>
+                <li>✅ Acceso al portal con usuarios de rol Distribuidor, Cliente (Dealer/Banco) y SysAdmin</li>
+                <li>✅ Archivos de prueba preparados:
+                    <ul>
+                        <li>Excel/CSV de vehículos (válido, con errores, corrupto)</li>
+                        <li>PDFs de CPA (individuales y batch)</li>
+                    </ul>
+                </li>
+                <li>✅ Catálogos y parámetros configurados (localidades, instituciones, estatus, campos CO)</li>
+                <li>✅ Reglas de Completitud configuradas por tenant (CO, CPA, Factura, Agrupar CL#)</li>
+                <li>✅ Vehículos existentes con diferentes estados (🔺 Pendiente, 🕐 Completado esperando, ✅ Liberado)</li>
+                <li>✅ Credit Letters de prueba (algunas liberadas, otras pendientes)</li>
+            </ul>
+
+            <!-- FASE 1 -->
+            <div class="phase-header" id="fase1">
+                FASE 1: Importación de datos e historiales
+            </div>
+
+            <h3>1.1 Importación Automatizada de Vehículos (7 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IMP-AUTO-01</td>
+                        <td>Importación automática exitosa desde archivo válido</td>
+                        <td>Vehículos importados correctamente, notificación de éxito</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-02</td>
+                        <td>Importación con archivo que contiene errores de validación</td>
+                        <td>Registro de errores, vehículos válidos importados, inválidos rechazados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-03</td>
+                        <td>Importación con VINs duplicados</td>
+                        <td>Sistema detecta duplicados, muestra advertencia, permite sobrescribir o cancelar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-04</td>
+                        <td>Importación con archivo corrupto o formato incorrecto</td>
+                        <td>Error claro indicando problema de formato, no se importa nada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-05</td>
+                        <td>Importación que falla por error de servidor</td>
+                        <td>Mensaje de error técnico, rollback de transacción, integridad de datos preservada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-06</td>
+                        <td>Reintentar importación fallida</td>
+                        <td>Sistema permite reintento, nueva importación exitosa</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-AUTO-07</td>
+                        <td>Importación masiva (1000+ vehículos)</td>
+                        <td>Proceso completo exitoso, performance aceptable, sin timeouts</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 Importar Vehículos desde pantalla (8 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IMP-UI-01</td>
+                        <td>Acceder a pantalla Importar Vehículos desde menú</td>
+                        <td>Pantalla carga correctamente con botón "Seleccionar archivo"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-02</td>
+                        <td>Seleccionar archivo Excel válido</td>
+                        <td>Archivo seleccionado, preview de columnas, botón "Importar" habilitado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-03</td>
+                        <td>Iniciar importación y validar progreso en tiempo real</td>
+                        <td>Barra de progreso actualizada, % completado visible, logs en vivo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-04</td>
+                        <td>Completar importación exitosa</td>
+                        <td>Mensaje "X vehículos importados", link a Grid, opción de descargar reporte</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-05</td>
+                        <td>Cancelar importación en progreso</td>
+                        <td>Confirmación, proceso detenido, rollback de registros parciales</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-06</td>
+                        <td>Importar con validaciones de negocio (campos requeridos faltantes)</td>
+                        <td>Errores listados por fila, opción de corregir archivo y reintentar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-07</td>
+                        <td>Importar archivo CSV (además de Excel)</td>
+                        <td>Sistema acepta CSV, parsea correctamente, importación exitosa</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMP-UI-08</td>
+                        <td>Validar mapeo de columnas según Plantilla de Importación del tenant</td>
+                        <td>Columnas mapeadas correctamente, valores por defecto aplicados, sin errores de mapeo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.3 Historial de Importaciones (5 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HIST-IMP-01</td>
+                        <td>Acceder a Historial de Importaciones desde menú</td>
+                        <td>Grid muestra todas las importaciones previas con fecha, usuario, estatus</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-IMP-02</td>
+                        <td>Filtrar historial por rango de fechas</td>
+                        <td>Grid actualizado mostrando solo importaciones en el rango seleccionado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-IMP-03</td>
+                        <td>Ver detalle de importación exitosa</td>
+                        <td>Modal/panel con resumen: X vehículos, archivo original, sin errores</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-IMP-04</td>
+                        <td>Ver detalle de importación con errores</td>
+                        <td>Lista de errores por fila, opción de descargar log de errores</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-IMP-05</td>
+                        <td>Descargar reporte de importación histórica</td>
+                        <td>Archivo Excel/PDF descargado con detalle completo de esa importación</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.4 Importar CPA (batch PDF) (9 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CPA-IMP-01</td>
+                        <td>Acceder a pantalla Importar CPA (Step 1)</td>
+                        <td>Pantalla muestra paso 1 de 3, botón "Seleccionar archivo"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-02</td>
+                        <td>Seleccionar archivo PDF válido (batch)</td>
+                        <td>Archivo cargado, indicador visual (nombre archivo, tamaño), botón "Siguiente"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-03</td>
+                        <td>Avanzar a Step 2 y validar progreso de procesamiento</td>
+                        <td>Barra de progreso con %, texto "Procesando CPAs...", contador de CPAs detectados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-04</td>
+                        <td>Completar procesamiento y avanzar a Step 3 (resumen)</td>
+                        <td>Resumen: "X CPAs importados correctamente", tabla con VINs y CPAs asociados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-05</td>
+                        <td>Importar CPA con VIN que no existe en sistema</td>
+                        <td>Warning visible, CPA no asociado, listado en "Errores" con razón</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-06</td>
+                        <td>Importar CPA duplicado (VIN ya tiene CPA)</td>
+                        <td>Sistema detecta duplicado, opción de sobrescribir o cancelar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-07</td>
+                        <td>Cancelar importación en Step 2</td>
+                        <td>Confirmación, proceso detenido, sin CPAs guardados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-08</td>
+                        <td>Validar que CPA importado actualiza estado de completitud del vehículo</td>
+                        <td>Si regla requiere CPA: vehículo 🔺 → 🕐 o ✅ según agrupación CL</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CPA-IMP-09</td>
+                        <td>Importar archivo PDF corrupto o inválido</td>
+                        <td>Error claro: "Archivo no válido", sin cambios en sistema</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.5 Historial de CPA (4 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HIST-CPA-01</td>
+                        <td>Acceder a Historial de CPA desde menú</td>
+                        <td>Grid con importaciones de CPA, fecha, usuario, cantidad procesada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-CPA-02</td>
+                        <td>Expandir fila de historial para ver detalle</td>
+                        <td>Tabla detalle con VINs, CPAs asociados, errores si los hubo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-CPA-03</td>
+                        <td>Descargar PDF original de importación histórica</td>
+                        <td>Archivo PDF descargado (mismo que se importó)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HIST-CPA-04</td>
+                        <td>Filtrar historial por rango de fechas</td>
+                        <td>Grid actualizado con importaciones del rango seleccionado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- FASE 2 -->
+            <div class="phase-header" id="fase2">
+                FASE 2: Grid de Vehículos Importados e integración PDV
+            </div>
+
+            <h3>2.1 Grid: búsqueda, filtros y vistas (9 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GRID-01</td>
+                        <td>Acceder a Grid de Vehículos Importados</td>
+                        <td>Grid carga con vehículos, paginación, filtros visibles</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-02</td>
+                        <td>Búsqueda por VIN</td>
+                        <td>Grid actualizado mostrando solo vehículos que coinciden con VIN</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-03</td>
+                        <td>Aplicar filtros combinados (fecha, estado, localidad)</td>
+                        <td>Grid refleja todos los filtros aplicados correctamente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-04</td>
+                        <td>Filtrar por "All Localities"</td>
+                        <td>Grid muestra vehículos de todas las localidades configuradas</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-05</td>
+                        <td>Crear vista personalizada con filtros guardados</td>
+                        <td>Vista guardada en dropdown, se puede seleccionar posteriormente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-06</td>
+                        <td>Aplicar vista personalizada guardada</td>
+                        <td>Grid carga con filtros de la vista, nombre de vista visible</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-07</td>
+                        <td>Limpiar filtros</td>
+                        <td>Todos los filtros removidos, grid muestra todos los vehículos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-08</td>
+                        <td>Ordenar columnas (ascendente/descendente)</td>
+                        <td>Grid reordenado según columna seleccionada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-09</td>
+                        <td>Paginación (siguiente, anterior, ir a página)</td>
+                        <td>Navegación fluida entre páginas, contador actualizado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.2 Grid: información y detalle expandible (7 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GRID-INFO-01</td>
+                        <td>Visualizar columnas principales del grid</td>
+                        <td>VIN, Marca, Modelo, Año, Estado Completitud (🔺🕐✅), Precio, Acciones</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-02</td>
+                        <td>Expandir fila para ver detalle completo del vehículo</td>
+                        <td>Panel expandido con 5 tabs: General, Documentos, Historial, PDV, Auditoría</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-03</td>
+                        <td>Navegar por tabs en detalle expandido</td>
+                        <td>Cada tab carga su contenido específico correctamente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-04</td>
+                        <td>Ver documentos asociados (CO, CPA, Factura) en tab "Documentos"</td>
+                        <td>Lista de documentos con opciones de ver/descargar PDF</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-05</td>
+                        <td>Ver historial de cambios en tab "Historial"</td>
+                        <td>Log de modificaciones: fecha, usuario, campo modificado, valor anterior/nuevo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-06</td>
+                        <td>Ver estado de integración PDV en tab "PDV"</td>
+                        <td>Fecha último envío, estatus (exitoso/fallido), opción de reenviar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-INFO-07</td>
+                        <td>Ver auditoría completa en tab "Auditoría"</td>
+                        <td>Creado por, Modificado por, Liberado por, fechas de cada acción</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.3 Grid: acciones individuales (9 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GRID-ACC-01</td>
+                        <td>Editar vehículo desde grid (botón editar)</td>
+                        <td>Redirige a pantalla Editar Vehículo con datos pre-cargados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-02</td>
+                        <td>Ver vehículo en modo solo lectura (botón ver)</td>
+                        <td>Redirige a pantalla View con campos no editables</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-03</td>
+                        <td>Generar CO individual desde grid</td>
+                        <td>Modal de generación CO, completar datos, CO generado y descargable</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-04</td>
+                        <td>Descargar CO existente de vehículo</td>
+                        <td>PDF de CO descargado inmediatamente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-05</td>
+                        <td>Liberar vehículo manualmente (bypass reglas)</td>
+                        <td>Confirmación, vehículo cambia a ✅ inmediatamente sin validar docs</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-06</td>
+                        <td>Enviar vehículo individual a PDV</td>
+                        <td>Confirmación, integración ejecutada, notificación de éxito/error</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-07</td>
+                        <td>Eliminar vehículo (si tiene permisos)</td>
+                        <td>Confirmación, vehículo eliminado del sistema</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-08</td>
+                        <td>Duplicar vehículo</td>
+                        <td>Modal con datos pre-cargados, modificar VIN, guardar → nuevo vehículo creado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>GRID-ACC-09</td>
+                        <td>Asignar vehículo a Cliente (Dealer/Banco)</td>
+                        <td>Modal "Assign To", seleccionar institución, confirmar → vehículo asignado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.4 Grid: acciones por lote (batch) (12 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BATCH-01</td>
+                        <td>Seleccionar múltiples vehículos con checkboxes</td>
+                        <td>Vehículos marcados, contador "X seleccionados", acciones batch habilitadas</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-02</td>
+                        <td>Seleccionar todos los vehículos de la página</td>
+                        <td>Checkbox "Select All" marca todos, contador actualizado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-03</td>
+                        <td>Deseleccionar todos</td>
+                        <td>Checkboxes desmarcados, contador a 0, acciones batch deshabilitadas</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-04</td>
+                        <td>Generar COs por lote (10 vehículos)</td>
+                        <td>Modal confirmación, progreso de generación, ZIP con todos los COs descargado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-05</td>
+                        <td>Enviar lote a PDV (5 vehículos)</td>
+                        <td>Confirmación, integración ejecutada, reporte de éxitos/fallos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-06</td>
+                        <td>Liberar lote manualmente (bypass reglas)</td>
+                        <td>Confirmación, todos cambian a ✅ independiente de docs</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-07</td>
+                        <td>Asignar lote a Cliente (Dealer/Banco)</td>
+                        <td>Modal "Assign To", institución seleccionada aplicada a todos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-08</td>
+                        <td>Exportar lote seleccionado a Excel</td>
+                        <td>Archivo Excel descargado con datos de vehículos seleccionados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-09</td>
+                        <td>Eliminar lote (si tiene permisos)</td>
+                        <td>Confirmación con advertencia, vehículos eliminados del sistema</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-10</td>
+                        <td>Actualización masiva de campo (ej: cambiar localidad)</td>
+                        <td>Modal bulk edit, seleccionar campo y valor, aplicado a todos seleccionados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-11</td>
+                        <td>Cancelar operación batch en progreso</td>
+                        <td>Confirmación, proceso detenido, rollback de cambios parciales</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BATCH-12</td>
+                        <td>Validar performance con selección de 100+ vehículos</td>
+                        <td>Operación completada en tiempo razonable (<30s), sin timeouts</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.5 Integración con PDV (5 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PDV-01</td>
+                        <td>Sincronización automática de vehículo liberado (✅) hacia PDV</td>
+                        <td>Vehículo enviado automáticamente, log de integración actualizado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PDV-02</td>
+                        <td>Reenviar vehículo que falló en integración inicial</td>
+                        <td>Reenvío exitoso, estatus en tab PDV actualizado a "Enviado"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PDV-03</td>
+                        <td>Validar que vehículo NO liberado (🔺🕐) NO se envía a PDV</td>
+                        <td>Opción de enviar deshabilitada o advertencia al intentar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PDV-04</td>
+                        <td>Ver log de integración en tab PDV de vehículo</td>
+                        <td>Fecha envío, respuesta API, código estatus, errores si los hubo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PDV-05</td>
+                        <td>Manejo de error de integración (PDV no responde)</td>
+                        <td>Mensaje claro de error, vehículo marcado como "Pendiente envío PDV", opción de reintentar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- FASE 3 -->
+            <div class="phase-header" id="fase3">
+                FASE 3: CO, reportes y Dashboard Ejecutivo
+            </div>
+
+            <h3>3.1 Generación de CO (5 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CO-01</td>
+                        <td>Generar CO desde modal (individual)</td>
+                        <td>Formulario con plantilla del tenant, completar campos, PDF generado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-02</td>
+                        <td>Editar CO existente</td>
+                        <td>Modal carga CO actual, modificar campos, guardar → PDF actualizado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-03</td>
+                        <td>Descargar CO desde grid o pantalla Ver Vehículo</td>
+                        <td>PDF descargado correctamente con formato esperado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-04</td>
+                        <td>Validar que CO usa Plantilla CO del tenant (configurada en admin)</td>
+                        <td>Campos del PDF coinciden con plantilla, sin campos faltantes</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-05</td>
+                        <td>Validar que generar CO actualiza estado de completitud (si regla lo requiere)</td>
+                        <td>Vehículo 🔺 → 🕐 o ✅ tras generar CO (según agrupación CL)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.2 Regeneración de CO (5 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CO-REGEN-01</td>
+                        <td>Regenerar CO tras modificar plantilla (admin cambió campos)</td>
+                        <td>CO regenerado con nueva plantilla, mantiene datos previos donde aplique</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-REGEN-02</td>
+                        <td>Regenerar CO tras editar datos del vehículo</td>
+                        <td>CO actualizado reflejando cambios en vehículo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-REGEN-03</td>
+                        <td>Versionar COs (mantener histórico de versiones)</td>
+                        <td>Lista de versiones en tab Documentos, opción de ver cualquier versión anterior</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-REGEN-04</td>
+                        <td>Regenerar CO por lote (batch)</td>
+                        <td>Modal confirmación, progreso, ZIP con COs regenerados descargado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>CO-REGEN-05</td>
+                        <td>Validar firma digital en CO (si tenant tiene configurada)</td>
+                        <td>PDF muestra firma digital correcta, válida al verificar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.3 Reportes y exportaciones (6 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>REP-01</td>
+                        <td>Generar reporte desde Dashboard</td>
+                        <td>Modal selección de tipo reporte y rango, Excel/PDF generado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REP-02</td>
+                        <td>Generar reporte desde Grid de Vehículos</td>
+                        <td>Mismo modal, reporte refleja filtros aplicados en grid</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REP-03</td>
+                        <td>Exportar grid completo a Excel</td>
+                        <td>Archivo descargado con todas las columnas visibles del grid</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REP-04</td>
+                        <td>Exportar selección (batch) a Excel</td>
+                        <td>Archivo descargado solo con vehículos seleccionados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REP-05</td>
+                        <td>Validar contenido de reporte (datos correctos, totales, formato)</td>
+                        <td>Reporte preciso, sin datos faltantes, formato profesional</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REP-06</td>
+                        <td>Programar reporte automático (si aplica)</td>
+                        <td>Configuración guardada, reporte enviado por email según frecuencia</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>3.4 Dashboard Ejecutivo (5 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>DASH-01</td>
+                        <td>Acceder a Dashboard como pantalla inicial tras login</td>
+                        <td>Dashboard carga con KPIs, gráficos, accesos rápidos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>DASH-02</td>
+                        <td>Visualizar KPIs principales (vehículos importados, pendientes, liberados)</td>
+                        <td>Números actualizados, íconos de estado visibles (🔺🕐✅)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>DASH-03</td>
+                        <td>Interactuar con gráficos (filtrar por rango de fechas)</td>
+                        <td>Gráficos actualizados según filtro, KPIs recalculados</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>DASH-04</td>
+                        <td>Acceder a acciones rápidas (Importar Vehículos, Generar Reporte)</td>
+                        <td>Links funcionales, redirigen a pantalla correspondiente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>DASH-05</td>
+                        <td>Validar KPI "[Pending to define]" (si ya está definido en ambiente)</td>
+                        <td>KPI muestra valor correcto según definición de negocio</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- FASE 4 -->
+            <div class="phase-header" id="fase4">
+                FASE 4: Regresión end-to-end y escenarios transversales
+            </div>
+
+            <h3>4.1 Flujos E2E integrados (6 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>E2E-01</td>
+                        <td>Flujo completo: Importar vehículos → completar docs → liberar → enviar PDV</td>
+                        <td>Todo el proceso exitoso sin errores, vehículo visible en PDV</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E2E-02</td>
+                        <td>Flujo CPA: Importar CPA batch → asociar a vehículos → validar completitud</td>
+                        <td>CPAs asociados, estados actualizados (🔺 → 🕐/✅)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E2E-03</td>
+                        <td>Flujo CO: Generar CO → editar → regenerar → descargar versión final</td>
+                        <td>Todas las versiones de CO guardadas, final correcta</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E2E-04</td>
+                        <td>Flujo Reportes: Aplicar filtros en grid → generar reporte → exportar Excel</td>
+                        <td>Reporte refleja filtros, exportación exitosa</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E2E-05</td>
+                        <td>Flujo Cliente: Distribuidor libera vehículo → Cliente Dealer/Banco lo ve en su grid</td>
+                        <td>Vehículo visible para Cliente solo tras ✅, no antes</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>E2E-06</td>
+                        <td>Flujo regresión completo (simular día real de operación)</td>
+                        <td>Todas las funcionalidades operan sin conflictos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>4.2 Escenarios transversales (8 escenarios)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TRANS-01</td>
+                        <td>Cambiar idioma a inglés (EN) y validar traducciones</td>
+                        <td>Toda la UI en inglés, sin textos en español, traducciones correctas</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-02</td>
+                        <td>Activar Dark Theme y validar contraste/legibilidad</td>
+                        <td>Tema oscuro aplicado correctamente, textos legibles, sin problemas visuales</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-03</td>
+                        <td>Recibir notificaciones en tiempo real (nuevo vehículo importado)</td>
+                        <td>Notificación toast visible, clickeable, redirige a detalle</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-04</td>
+                        <td>Validar auditoría completa de acciones (quién, qué, cuándo)</td>
+                        <td>Tab Auditoría muestra log completo con usuario, fecha, acción</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-05</td>
+                        <td>Probar concurrencia (2 usuarios editando mismo vehículo)</td>
+                        <td>Sistema detecta conflicto, muestra advertencia, permite resolver</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-06</td>
+                        <td>Validar permisos por rol (Distribuidor vs Cliente vs SysAdmin)</td>
+                        <td>Cada rol ve solo sus pantallas/acciones permitidas, sin bypasses</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-07</td>
+                        <td>Probar timeout de sesión (inactividad prolongada)</td>
+                        <td>Modal de sesión expirada, redirige a login sin pérdida de datos críticos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANS-08</td>
+                        <td>Validar responsive design (tablet, mobile si aplica)</td>
+                        <td>UI adaptada a diferentes resoluciones, funcionalidad preservada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- FASE 5 NUEVA -->
+            <div class="phase-header" id="fase5">
+                FASE 5: Reglas de Completitud y Liberación
+            </div>
+
+            <div class="info-box">
+                <strong>🎯 Propósito de las Reglas de Completitud:</strong>
+                <p style="margin-top: 10px;">Determinar cuándo un vehículo está <strong>completo documentalmente</strong> y puede ser <strong>liberado (✅)</strong> para que los roles <strong>Cliente (Dealer/Banco)</strong> puedan verlo en su grid. Sin liberación, el vehículo permanece invisible para Clientes.</p>
+                
+                <p style="margin-top: 15px;"><strong>Estados universales:</strong></p>
+                <ul style="margin-top: 5px;">
+                    <li>🔺 <strong>Pendiente:</strong> Falta documentación requerida</li>
+                    <li>🕐 <strong>Completado (esperando):</strong> Documentos completos PERO esperando que otros vehículos de su Credit Letter se completen (solo si agrupación está activada)</li>
+                    <li>✅ <strong>Liberado:</strong> Documentos completos + Credit Letter liberada (si aplica) → <strong>visible para Cliente</strong></li>
+                </ul>
+            </div>
+
+            <h3 id="fase5-1">5.1 Administración de Reglas (CRUD) — 8 escenarios</h3>
+            <div class="note-box">
+                <strong>🔒 Nota:</strong> Esta subsección es <strong>solo para SysAdmin/Soporte Autoreg</strong>. Motorambar NO tiene acceso a estas pantallas.
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ADM-REGLA-01</td>
+                        <td>Crear nueva regla de completitud (modal "+ NUEVA REGLA")</td>
+                        <td>Modal carga: selector tenant, checkboxes (CO, CPA, Factura, Agrupar CL#), botón "Guardar"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-02</td>
+                        <td>Configurar regla con documentos requeridos (CO ✅, CPA ✅, Factura ❌)</td>
+                        <td>Checks guardados, regla visible en grid con columnas CO/CPA marcadas, Factura vacía</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-03</td>
+                        <td>Activar "Agrupar por N. Carta de Crédito" en regla</td>
+                        <td>Check azul visible en columna "AGRUPAR CL#", regla en estado "Activo"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-04</td>
+                        <td>Editar regla existente (cambiar documentos requeridos)</td>
+                        <td>Modal carga valores actuales, modificar, guardar → regla actualizada en grid</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-05</td>
+                        <td>Desactivar regla (cambiar estado a "Inactivo")</td>
+                        <td>Badge "Inactivo" (gris/rojo), validaciones de esa regla no aplican a nuevos vehículos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-06</td>
+                        <td>Reactivar regla previamente desactivada</td>
+                        <td>Badge "Activo" (verde), validaciones vuelven a aplicar</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-07</td>
+                        <td>Eliminar regla (ícono eliminar)</td>
+                        <td>Confirmación, regla eliminada del grid, Credit Letters previamente liberadas persisten como ✅</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ADM-REGLA-08</td>
+                        <td>Validar que sin regla configurada para tenant, vehículos quedan en 🔺 permanente</td>
+                        <td>Importar vehículos → quedan 🔺 hasta que se configure regla para ese tenant</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 id="fase5-2">5.2 Comportamiento de Liberación — 18 escenarios</h3>
+            <div class="success-box">
+                <strong>✅ PRECONDICIÓN:</strong> Regla configurada por Soporte Autoreg con: <strong>CO ✅, CPA ✅, Agrupar por CL# ✅</strong> (a menos que el escenario especifique otra configuración).
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Escenario</th>
+                        <th style="width: 30%;">Resultado Esperado</th>
+                        <th style="width: 10%;">Estatus</th>
+                        <th style="width: 10%;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>REGLA-01</td>
+                        <td>Importar 5 vehículos con mismo Credit Letter Number (CL#)</td>
+                        <td>Todos muestran icono 🔺 (Pendiente) en columna de estado</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-02</td>
+                        <td>Completar documentos (CO + CPA) de 1 vehículo del grupo</td>
+                        <td>Ese vehículo cambia a 🕐 (Completado esperando), otros 4 siguen en 🔺</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-03</td>
+                        <td>Completar documentos de 3 vehículos más (total 4 de 5 completos)</td>
+                        <td>Los 4 con docs completos muestran 🕐, el 5to (incompleto) sigue en 🔺</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-04</td>
+                        <td>Completar documentos del 5to vehículo (último del grupo)</td>
+                        <td><strong>TODOS los 5 cambian a ✅ (Liberados)</strong> simultáneamente</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-05</td>
+                        <td>Validar que Credit Letter queda marcada como "liberada" permanentemente</td>
+                        <td>Importar nuevo vehículo con mismo CL# → completar docs → ✅ inmediato (no espera grupo)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-06</td>
+                        <td>Modificar regla de completitud (desactivar CO) DESPUÉS de liberar grupo</td>
+                        <td>Credit Letter liberada NO se ve afectada, sigue ✅, modificación NO es retroactiva</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-07</td>
+                        <td>Liberar vehículo manualmente (botón "Liberar" sin completar docs)</td>
+                        <td>Vehículo cambia a ✅ inmediatamente, bypasea validaciones de docs y agrupación</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-08</td>
+                        <td>Cliente Dealer intenta ver grid de vehículos</td>
+                        <td>Solo vehículos con ✅ son visibles, los 🔺 y 🕐 NO aparecen en su grid</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-09</td>
+                        <td>Cliente Banco intenta ver grid de vehículos</td>
+                        <td>Solo vehículos con ✅ asignados a su banco son visibles</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-10</td>
+                        <td>Distribuidor ve todos los estados (🔺🕐✅) en su grid</td>
+                        <td>Grid muestra los 3 iconos correctamente según estado de cada vehículo</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-11</td>
+                        <td>Desactivar "Agrupar por CL#" en regla (Admin cambia a ❌)</td>
+                        <td>Nuevos vehículos importados: completar docs → ✅ individual (sin esperar grupo)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-12</td>
+                        <td>Con agrupación CL# ❌: importar 3 vehículos mismo CL#</td>
+                        <td>Completar 1 → ese vehículo ✅ inmediato, otros 2 siguen 🔺 (liberación individual)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-13</td>
+                        <td>Importar vehículo SIN Credit Letter Number (campo vacío/null)</td>
+                        <td>Completar docs → ✅ inmediato (no entra en lógica de agrupación)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-14</td>
+                        <td>Importar 3 vehículos CON CL# + 2 SIN CL# (mismo tenant, agrupación ✅)</td>
+                        <td>Los 2 sin CL#: completar → ✅ individual. Los 3 con CL#: esperan completarse todos</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-15</td>
+                        <td>Validar transición visual 🔺 → 🕐 → ✅ en grid en tiempo real</td>
+                        <td>Iconos actualizan sin refresh, tooltip muestra estado literal ("Pendiente", "Completado esperando", "Liberado")</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-16</td>
+                        <td>Ver badge "COMPLETADO" junto a icono 🕐 en detalle de vehículo</td>
+                        <td>Badge verde "COMPLETADO", tooltip explica: "Esperando liberación de Credit Letter"</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-17</td>
+                        <td>Intentar enviar a PDV un vehículo en estado 🔺 o 🕐</td>
+                        <td>Advertencia: "Solo vehículos liberados pueden enviarse a PDV", acción bloqueada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>REGLA-18</td>
+                        <td>Liberar grupo de 5 vehículos por lote (batch) completando docs del último</td>
+                        <td>Sistema detecta que todos están completos, cambian a ✅ simultáneamente, CL marcada como liberada</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- RESTO DE SECCIONES ORIGINALES -->
+            <h2 id="criterios">9. Criterios de entrada y salida</h2>
+            
+            <h3>Criterios de Entrada (para iniciar pruebas):</h3>
+            <ul>
+                <li>✅ Ambiente de Test estable y disponible</li>
+                <li>✅ Usuarios de prueba creados para todos los roles</li>
+                <li>✅ Datos maestros configurados (catálogos, localidades, instituciones)</li>
+                <li>✅ Reglas de Completitud configuradas por tenant</li>
+                <li>✅ Archivos de prueba preparados y validados</li>
+            </ul>
+
+            <h3>Criterios de Salida (para considerar fase completa):</h3>
+            <ul>
+                <li>✅ 100% de escenarios ejecutados</li>
+                <li>✅ 0 defectos de severidad ALTA sin resolver</li>
+                <li>✅ Defectos MEDIA/BAJA documentados y priorizados</li>
+                <li>✅ Sign-off del Product Owner</li>
+            </ul>
+
+            <h2 id="defectos">10. Gestión de defectos</h2>
+            <p>Todos los defectos encontrados durante la ejecución deben ser reportados en <strong>Azure DevOps</strong> siguiendo la plantilla del <strong>Anejo A</strong>.</p>
+            
+            <h3>Clasificación de severidad:</h3>
+            <ul>
+                <li><strong>ALTA (Blocker):</strong> Impide la ejecución de pruebas o uso de funcionalidad crítica</li>
+                <li><strong>MEDIA (Major):</strong> Afecta funcionalidad importante pero existe workaround</li>
+                <li><strong>BAJA (Minor):</strong> Problema cosmético o de UX sin impacto funcional</li>
+            </ul>
+
+            <h2 id="estabilizacion">11. Proceso de estabilización</h2>
+            
+            <h3>Hot Fixes:</h3>
+            <p>Se considerarán como hot fixes aquellos ajustes o correcciones que estén relacionados directamente con el alcance inicial acordado del proyecto. Estos serán atendidos como parte del proceso de estabilización, siempre que correspondan a funcionalidades previamente definidas.</p>
+            
+            <h3>Change Requests:</h3>
+            <p>Todo requerimiento, ajuste o funcionalidad que no forme parte del alcance inicial será tratado como una mejora o change request. Estas mejoras deberán ser discutidas internamente por Motorambar para validar prioridad, necesidad operacional e impacto. Luego, deberán ser discutidas con Autoreg para su evaluación, estimación y planificación correspondiente.</p>
+
+            <h2 id="resumen">12. Resumen de ejecución</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Fase</th>
+                        <th>Escenarios</th>
+                        <th>Passed</th>
+                        <th>Failed</th>
+                        <th>% Completado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FASE 1: Importación de datos e historiales</td>
+                        <td>33</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FASE 2: Grid de Vehículos e integración PDV</td>
+                        <td>42</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FASE 3: CO, reportes y Dashboard</td>
+                        <td>21</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FASE 4: Regresión E2E y transversales</td>
+                        <td>14</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>FASE 5: Reglas de Completitud y Liberación</td>
+                        <td>26</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="font-weight: bold; background: #dbeafe;">
+                        <td>TOTAL</td>
+                        <td>136</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="aprobaciones">13. Aprobaciones</h2>
+            <div class="signature-section">
+                <h3 style="margin-bottom: 30px;">Firmas de Autorización</h3>
+                
+                <div class="signature-block">
+                    <h4>Por parte de Autoreg:</h4>
+                    <div class="signature-line">
+                        Nombre: _________________________________<br>
+                        Cargo: _________________________________<br>
+                        Fecha: _________________________________
+                    </div>
+                </div>
+
+                <div class="signature-block">
+                    <h4>Por parte de Motorambar:</h4>
+                    <div class="signature-line">
+                        Nombre: Kevin Morales<br>
+                        Cargo: _________________________________<br>
+                        Fecha: _________________________________
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-box" style="margin-top: 40px;">
+                <strong>📌 Notas adicionales:</strong>
+                <ul style="margin-top: 10px;">
+                    <li>Este documento es la versión <strong>COMPLETA para Autoreg</strong>, incluyendo administración de reglas</li>
+                    <li>Existe una versión separada para Motorambar sin la sección de administración</li>
+                    <li>Las reglas de completitud son configuradas por SysAdmin de Autoreg</li>
+                    <li>Cualquier cambio en configuración de reglas debe ser solicitado a Autoreg Soporte</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Portal de Distribución de Vehículos — Motorambar</strong></p>
+            <p>Plan E2E v1.3 (Autoreg Completo) — 136 escenarios | © 2026 Autoreg LLC</p>
+        </footer>
+    </div>
+</body>
+</html>

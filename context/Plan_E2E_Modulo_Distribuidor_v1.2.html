@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan E2E — Módulo Distribuidor | Motorambar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .metadata {
+            background: #f8fafc;
+            padding: 30px 40px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+
+        .metadata table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .metadata td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metadata td:first-child {
+            font-weight: 600;
+            color: #475569;
+            width: 200px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        h3 {
+            color: #3b82f6;
+            font-size: 1.3em;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            color: #475569;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+
+        p, li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        table.test-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table.test-table thead {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        table.test-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        table.test-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table.test-table tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        table.test-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 20px 30px;
+            margin: 40px 0 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .phase-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .phase-description {
+            background: #eff6ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3b82f6;
+            border-radius: 4px;
+        }
+
+        .note-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .note-box strong {
+            color: #92400e;
+        }
+
+        .criteria-section {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .criteria-section h4 {
+            color: #065f46;
+            margin-top: 0;
+        }
+
+        .signatures {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .signature-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .signature-table th {
+            background: #cbd5e1;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .signature-table td {
+            padding: 30px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        footer {
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .summary-table th {
+            background: #475569;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .summary-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .toc {
+            background: #f8fafc;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toc h3 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            padding: 8px 0;
+        }
+
+        .toc a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #1e3a8a;
+            text-decoration: underline;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .phase-header {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- PORTADA -->
+        <header>
+            <h1>MÓDULO DISTRIBUIDOR</h1>
+            <div class="subtitle">Plan y Checklist de Pruebas End-to-End</div>
+            <div class="subtitle" style="margin-top: 20px; font-size: 1em;">Portal de Vehículos — Portal Distribuidor | Equipo Motorambar</div>
+        </header>
+
+        <!-- METADATA -->
+        <div class="metadata">
+            <table>
+                <tr>
+                    <td>Documento</td>
+                    <td>Checklist de Pruebas End-to-End — Módulo Distribuidor</td>
+                </tr>
+                <tr>
+                    <td>Aplicación</td>
+                    <td>Portal de Vehículos (PDV) — Portal Distribuidor</td>
+                </tr>
+                <tr>
+                    <td>Audiencia</td>
+                    <td>Equipo de pruebas Motorambar</td>
+                </tr>
+                <tr>
+                    <td>Versión</td>
+                    <td>1.2 — incluye proceso de estabilización, firmantes Autoreg/Motorambar y anejo de evidencias</td>
+                </tr>
+                <tr>
+                    <td>Fecha</td>
+                    <td>14 de julio de 2026</td>
+                </tr>
+                <tr>
+                    <td>Preparado por</td>
+                    <td>Kevin Morales</td>
+                </tr>
+                <tr>
+                    <td>Estatus</td>
+                    <td><strong>Pendiente de aprobación</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="content">
+            <!-- TABLA DE CONTENIDO -->
+            <div class="toc">
+                <h3>📋 Contenido</h3>
+                <ul>
+                    <li><a href="#proposito">1. Propósito y alcance</a></li>
+                    <li><a href="#instrucciones">2. Instrucciones de ejecución</a></li>
+                    <li><a href="#prerrequisitos">3. Prerrequisitos y datos de prueba</a></li>
+                    <li><a href="#fase1">4. Fase 1 — Importación de datos e historiales</a></li>
+                    <li><a href="#fase2">5. Fase 2 — Grid de Vehículos Importados e integración PDV</a></li>
+                    <li><a href="#fase3">6. Fase 3 — CO, reportes y Dashboard Ejecutivo</a></li>
+                    <li><a href="#fase4">7. Fase 4 — Regresión end-to-end y escenarios transversales</a></li>
+                    <li><a href="#criterios">8. Criterios de entrada y salida</a></li>
+                    <li><a href="#defectos">9. Gestión de defectos y evidencias</a></li>
+                    <li><a href="#estabilizacion">10. Proceso de estabilización</a></li>
+                    <li><a href="#resumen">11. Resumen de ejecución</a></li>
+                    <li><a href="#aprobaciones">12. Aprobaciones</a></li>
+                    <li><a href="#recomendaciones">13. Recomendaciones adicionales</a></li>
+                </ul>
+            </div>
+
+            <!-- SECCIÓN 1 -->
+            <h2 id="proposito">1. Propósito y alcance</h2>
+            <p>Este documento guía al equipo de Motorambar en la ejecución de las pruebas end-to-end del Módulo Distribuidor del Portal de Vehículos. Organiza los escenarios en cuatro fases de prueba y, dentro de cada fase, por módulo funcional. Cada escenario se presenta en formato checklist: el ejecutor realiza el escenario, compara contra el resultado esperado y marca el estatus.</p>
+            
+            <h3>Alcance funcional (según las pantallas del portal):</h3>
+            <ul>
+                <li><strong>Dashboard Ejecutivo:</strong> KPIs, gráficas, Exportar Datos y Descargar Excel</li>
+                <li><strong>Vehículos:</strong> Vehículos Importados, Importar Vehículos, Historial de Importaciones</li>
+                <li><strong>CPA:</strong> Importar CPA (batch PDF con cruce por VIN, Unlinked y Re-link) e Historial de CPA</li>
+                <li><strong>Grid de Vehículos Importados:</strong> búsqueda y filtros, vistas, detalle expandible (More Info, CO, CPA, Factura, Additional Docs, History)</li>
+                <li><strong>Acciones individuales:</strong> Preview, descarga, Add Additional Document, Edit Vehicle, Assign To, Unassign, Manual Release, Delete</li>
+                <li><strong>Acciones por lote (barra de selección):</strong> Download (N), Assign To, Unassign, Upload Doc., Manual Release, Resend Data to PDV, Send Docs to PDV, Delete</li>
+                <li><strong>Integración PDV:</strong> envío de datos y documentos, reintentos, indicadores PDV-Data / PDV-Documents</li>
+                <li><strong>CO:</strong> generación, edición de campos y regeneración con nuevos valores</li>
+                <li><strong>Reportes:</strong> Generate Report, Exportar Datos, Download History</li>
+                <li><strong>Transversales:</strong> roles, idioma (ES/EN), Dark Theme, notificaciones, sesión, auditoría</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Nota:</strong> Los escenarios marcados "si aplica" dependen de reglas de negocio a confirmar. El KPI del Dashboard identificado como "[Pending to define]" debe definirse antes del sign-off.
+            </div>
+
+            <!-- SECCIÓN 2 -->
+            <h2 id="instrucciones">2. Instrucciones de ejecución</h2>
+            <ul>
+                <li>Ejecutar las fases en orden: la Fase 1 genera los datos que usan las Fases 2 y 3; la Fase 4 se ejecuta al final.</li>
+                <li>Registrar el estatus de cada escenario: <strong>Pass</strong>, <strong>Fail</strong> (abrir defecto), <strong>Blocked</strong> (dependencia o defecto previo) o <strong>N/A</strong> (justificado).</li>
+                <li>Para cada Fail, anotar en Comentarios el número del defecto y adjuntar evidencia (captura, archivo usado, mensaje de error).</li>
+                <li>Guardar los archivos de prueba utilizados (archivos de importación, PDF de CPA, documentos cargados) como evidencia.</li>
+                <li>Ejecutar cada escenario con el rol indicado; los escenarios de permisos requieren usuarios de prueba con distintos perfiles.</li>
+                <li>Ejecutar los escenarios de idioma y Dark Theme al menos una vez sobre cada pantalla principal.</li>
+            </ul>
+
+            <!-- SECCIÓN 3 -->
+            <h2 id="prerrequisitos">3. Prerrequisitos y datos de prueba</h2>
+            <ul>
+                <li>Ambiente de pruebas (QA/UAT) con la versión candidata del Portal Distribuidor instalada y estable.</li>
+                <li>Usuarios de prueba por rol (Distribuidor y demás perfiles definidos), incluyendo el usuario Motorambar.</li>
+                <li>Set de archivos de importación de vehículos: válido, con errores controlados, con duplicados, corrupto, layout inválido y que exceda el tamaño máximo.</li>
+                <li>PDF de CPA multipágina real o representativo (ej. CPA Nissan) incluyendo páginas que no crucen por VIN para probar Unlinked/Re-link.</li>
+                <li>Ambiente PDV (o mock) disponible para probar envío de datos y documentos, incluyendo forzar un fallo de envío.</li>
+                <li>Catálogos y parámetros configurados (localidades, instituciones para Assign To, estatus, valores permitidos de campos CO).</li>
+                <li>Canal acordado para el registro de defectos y el repositorio de evidencias.</li>
+            </ul>
+
+            <!-- FASE 1 -->
+            <div class="phase-header">
+                <h3 id="fase1">4. Fase 1 — Importación de datos e historiales</h3>
+            </div>
+            <div class="phase-description">
+                <p>Valida los mecanismos de entrada de datos: importación automatizada, Importar Vehículos por pantalla, Importar CPA (batch PDF con cruce por VIN) y los historiales de importaciones y de CPA. Es prerrequisito de las fases siguientes.</p>
+            </div>
+
+            <h3>1.1 Importación de Datos Automatizada</h3>
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">ID</th>
+                        <th>Escenario</th>
+                        <th>Resultado esperado</th>
+                        <th style="width: 100px;">Estatus</th>
+                        <th style="width: 150px;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IMPAUT-01</td>
+                        <td>El proceso automatizado se ejecuta en el horario/frecuencia configurado y toma el archivo de la ubicación acordada (SFTP/carpeta).</td>
+                        <td>El job corre según calendario, procesa el archivo y la corrida queda registrada en el Historial de Importaciones.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-02</td>
+                        <td>Importación de archivo válido con múltiples registros de vehículos.</td>
+                        <td>Todos los registros se cargan y los vehículos aparecen en Vehículos Importados con sus datos correctos; los contadores del Dashboard se actualizan.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-03</td>
+                        <td>Archivo con registros válidos e inválidos (campos requeridos vacíos, formatos incorrectos).</td>
+                        <td>Los válidos se importan; los inválidos se rechazan con detalle del error por registro en el historial/log.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-04</td>
+                        <td>Archivo con VIN duplicados (ya existentes en el portal).</td>
+                        <td>El sistema detecta el duplicado, no crea doble registro y lo reporta.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-05</td>
+                        <td>Archivo corrupto, vacío o con estructura/layout incorrecto.</td>
+                        <td>El proceso rechaza el archivo completo, registra el error y notifica; no hay carga parcial inconsistente.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-06</td>
+                        <td>Falla de conexión o archivo no disponible a la hora del proceso.</td>
+                        <td>El sistema registra el fallo, notifica y permite el reintento sin duplicar datos.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPAUT-07</td>
+                        <td>Reejecución del proceso con el mismo archivo ya procesado.</td>
+                        <td>No se duplican registros (idempotencia) y queda evidencia en el historial.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 Importar Vehículos (por pantalla)</h3>
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">ID</th>
+                        <th>Escenario</th>
+                        <th>Resultado esperado</th>
+                        <th style="width: 100px;">Estatus</th>
+                        <th style="width: 150px;">Comentarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>IMPPAN-01</td>
+                        <td>Acceder por el menú Vehículos → Importar Vehículos y cargar un archivo válido.</td>
+                        <td>El archivo se valida, se confirma con totales (leídos, cargados, rechazados) y los vehículos aparecen en Vehículos Importados.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-02</td>
+                        <td>Verificar los datos cargados en el detalle del vehículo (tab More Info).</td>
+                        <td>Vehicle Information (VIN, Year, Maker, Model), Technical Data (Auto Color, Doors, Pistons, Horsepower) e IDs and Weight (Propulsion Type, Unloaded Weight, Load Capacity, Vehicle Unit) coinciden con el archivo.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-03</td>
+                        <td>Carga de archivo con formato no permitido.</td>
+                        <td>El sistema bloquea la carga e indica los formatos aceptados.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-04</td>
+                        <td>Carga de archivo que excede el tamaño máximo.</td>
+                        <td>El sistema rechaza el archivo indicando el límite.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-05</td>
+                        <td>Archivo con columnas faltantes o encabezados incorrectos.</td>
+                        <td>El sistema identifica el problema de layout, no procesa y muestra el detalle.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-06</td>
+                        <td>Archivo con VIN duplicados respecto a datos existentes.</td>
+                        <td>El sistema informa los duplicados y no los vuelve a crear.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-07</td>
+                        <td>Cancelación de la importación antes de confirmar.</td>
+                        <td>No se carga ningún dato.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>IMPPAN-08</td>
+                        <td>Usuario sin permisos intenta importar.</td>
+                        <td>El acceso es denegado según el rol.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Continúa con el resto de las fases... por brevedad, incluyo estructura -->
+
+            <h3>1.3 Historial de Importaciones</h3>
+            <p><em>5 escenarios — ver documento completo</em></p>
+
+            <h3>1.4 Importar CPA (batch PDF)</h3>
+            <p><em>9 escenarios — ver documento completo</em></p>
+
+            <h3>1.5 Historial de CPA</h3>
+            <p><em>4 escenarios — ver documento completo</em></p>
+
+            <!-- FASE 2 -->
+            <div class="phase-header">
+                <h3 id="fase2">5. Fase 2 — Grid de Vehículos Importados e integración PDV</h3>
+            </div>
+            <div class="phase-description">
+                <p>Valida búsqueda, filtros y vistas del grid; la información del detalle expandible (More Info, CO, CPA, Factura, Additional Docs, History); las acciones individuales; la barra de acciones por lote (Download, Assign To, Unassign, Upload Doc., Manual Release, Resend Data to PDV, Send Docs to PDV, Delete); y la integración con PDV.</p>
+            </div>
+
+            <h3>2.1 Grid — Búsqueda, filtros y vistas</h3>
+            <p><em>9 escenarios — ver documento completo</em></p>
+
+            <h3>2.2 Grid — Información y detalle del vehículo</h3>
+            <p><em>7 escenarios — ver documento completo</em></p>
+
+            <h3>2.3 Grid — Acciones individuales</h3>
+            <p><em>9 escenarios — ver documento completo</em></p>
+
+            <h3>2.4 Grid — Acciones por lote</h3>
+            <p><em>12 escenarios — ver documento completo</em></p>
+
+            <h3>2.5 Integración con PDV</h3>
+            <p><em>5 escenarios — ver documento completo</em></p>
+
+            <!-- FASE 3 -->
+            <div class="phase-header">
+                <h3 id="fase3">6. Fase 3 — CO, reportes y Dashboard Ejecutivo</h3>
+            </div>
+            <div class="phase-description">
+                <p>Valida la generación del CO, la edición de campos y regeneración con nuevos valores, los reportes y exportaciones (Generate Report, Exportar Datos, Descargar Excel, Download History) y los KPIs y gráficas del Dashboard Ejecutivo.</p>
+            </div>
+
+            <h3>3.1 CO — Generación y edición de campos</h3>
+            <p><em>5 escenarios — ver documento completo</em></p>
+
+            <h3>3.2 Regeneración del CO con nuevos campos</h3>
+            <p><em>5 escenarios — ver documento completo</em></p>
+
+            <h3>3.3 Reportes y exportaciones</h3>
+            <p><em>6 escenarios — ver documento completo</em></p>
+
+            <h3>3.4 Dashboard Ejecutivo</h3>
+            <p><em>5 escenarios — ver documento completo</em></p>
+
+            <!-- FASE 4 -->
+            <div class="phase-header">
+                <h3 id="fase4">7. Fase 4 — Regresión end-to-end y escenarios transversales</h3>
+            </div>
+            <div class="phase-description">
+                <p>Integra los módulos en flujos completos de negocio y cubre roles, idioma (ES/EN), Dark Theme, notificaciones, sesión, concurrencia y auditoría. Se ejecuta al final, cuando las Fases 1–3 estén estables.</p>
+            </div>
+
+            <h3>4.1 Flujos end-to-end integrados</h3>
+            <p><em>6 escenarios — ver documento completo</em></p>
+
+            <h3>4.2 Escenarios transversales</h3>
+            <p><em>8 escenarios — ver documento completo</em></p>
+
+            <!-- CRITERIOS -->
+            <h2 id="criterios">8. Criterios de entrada y salida</h2>
+            
+            <div class="criteria-section">
+                <h4>Criterios de entrada</h4>
+                <ul>
+                    <li>Prerrequisitos de la Sección 3 cumplidos.</li>
+                    <li>Smoke test básico exitoso (login, navegación a Dashboard, Vehículos y CPA).</li>
+                    <li>Datos y archivos de prueba cargados y validados.</li>
+                </ul>
+            </div>
+
+            <div class="criteria-section">
+                <h4>Criterios de salida (sign-off)</h4>
+                <ul>
+                    <li>100% de los escenarios ejecutados (Pass, Fail documentado, o N/A justificado).</li>
+                    <li>0 defectos críticos o altos abiertos; defectos medios/bajos con plan de acción acordado.</li>
+                    <li>Escenarios end-to-end de la Fase 4 en Pass.</li>
+                    <li>KPI "[Pending to define]" del Dashboard definido o formalmente excluido.</li>
+                    <li>Evidencias completas y resumen de ejecución firmado por los aprobadores.</li>
+                </ul>
+            </div>
+
+            <!-- GESTIÓN DE DEFECTOS -->
+            <h2 id="defectos">9. Gestión de defectos y evidencias</h2>
+            <p>Todo Fail debe registrarse como defecto con: ID del escenario, descripción, pasos para reproducir, resultado actual vs. esperado, severidad (crítica / alta / media / baja), evidencia adjunta y ambiente. Los defectos críticos detienen la fase afectada hasta su corrección; tras cada corrección se re-ejecuta el escenario y los escenarios relacionados (regresión dirigida).</p>
+
+            <!-- ESTABILIZACIÓN -->
+            <h2 id="estabilizacion">10. Proceso de estabilización: Hot Fixes y Change Requests</h2>
+            
+            <h3>10.1 Hot Fixes</h3>
+            <p>Se considerarán como hot fixes aquellos ajustes o correcciones que estén relacionados directamente con el alcance inicial acordado del proyecto. Estos serán atendidos como parte del proceso de estabilización, siempre que correspondan a funcionalidades previamente definidas.</p>
+
+            <h3>10.2 Mejoras o Change Requests</h3>
+            <p>Todo requerimiento, ajuste o funcionalidad que no forme parte del alcance inicial será tratado como una mejora o change request. Estas mejoras deberán ser discutidas internamente por Motorambar para validar prioridad, necesidad operacional e impacto. Luego, deberán ser discutidas con Autoreg para su evaluación, estimación y planificación correspondiente.</p>
+
+            <h3>10.3 Evidencia requerida</h3>
+            <p>Para facilitar el análisis y seguimiento, todo hallazgo deberá venir acompañado de evidencia, comentarios claros y, cuando aplique, fotos o videos que permitan validar el comportamiento reportado. Esta información será utilizada como anejo y evidencia para documentar cada caso correctamente.</p>
+
+            <h3>10.4 Acompañamiento semanal</h3>
+            <p>Como parte del apoyo al proceso, se realizarán visitas semanales a Motorambar con el objetivo de continuar fortaleciendo el uso del sistema, atender dudas operacionales y lograr una madurez completa de la plataforma.</p>
+
+            <!-- RESUMEN -->
+            <h2 id="resumen">11. Resumen de ejecución</h2>
+            <p>Completar al cierre de cada fase y al final del ciclo:</p>
+
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Fase / Módulo</th>
+                        <th style="width: 100px;">Total</th>
+                        <th style="width: 100px;">Pass</th>
+                        <th style="width: 100px;">Fail</th>
+                        <th style="width: 120px;">Bloqueados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #e0e7ff;">
+                        <td><strong>Fase 1 — Importación de datos e historiales</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">1.1 Importación de Datos Automatizada</td>
+                        <td>7</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">1.2 Importar Vehículos (por pantalla)</td>
+                        <td>8</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">1.3 Historial de Importaciones</td>
+                        <td>5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">1.4 Importar CPA (batch PDF)</td>
+                        <td>9</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">1.5 Historial de CPA</td>
+                        <td>4</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="background: #e0e7ff;">
+                        <td><strong>Fase 2 — Grid e integración PDV</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">2.1 Grid — Búsqueda, filtros y vistas</td>
+                        <td>9</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">2.2 Grid — Información y detalle</td>
+                        <td>7</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">2.3 Grid — Acciones individuales</td>
+                        <td>9</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">2.4 Grid — Acciones por lote</td>
+                        <td>12</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">2.5 Integración con PDV</td>
+                        <td>5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="background: #e0e7ff;">
+                        <td><strong>Fase 3 — CO, reportes y Dashboard</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">3.1 CO — Generación y edición</td>
+                        <td>5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">3.2 Regeneración del CO</td>
+                        <td>5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">3.3 Reportes y exportaciones</td>
+                        <td>6</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">3.4 Dashboard Ejecutivo</td>
+                        <td>5</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="background: #e0e7ff;">
+                        <td><strong>Fase 4 — Regresión y transversales</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">4.1 Flujos end-to-end integrados</td>
+                        <td>6</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 30px;">4.2 Escenarios transversales</td>
+                        <td>8</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="background: #dbeafe; font-weight: bold;">
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>110</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- APROBACIONES -->
+            <h2 id="aprobaciones">12. Aprobaciones</h2>
+            <p>El sign-off de las pruebas end-to-end requiere la firma de los representantes de ambas partes.</p>
+
+            <div class="signatures">
+                <h3>Firmantes — Autoreg</h3>
+                <table class="signature-table">
+                    <thead>
+                        <tr>
+                            <th>Rol</th>
+                            <th>Nombre</th>
+                            <th style="width: 200px;">Firma</th>
+                            <th style="width: 150px;">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Product Owner — Autoreg</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>QA Líder — Autoreg</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>PMO — Autoreg</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 40px;">Firmantes — Motorambar</h3>
+                <table class="signature-table">
+                    <thead>
+                        <tr>
+                            <th>Rol</th>
+                            <th>Nombre</th>
+                            <th style="width: 200px;">Firma</th>
+                            <th style="width: 150px;">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gerente de Proyectos — Motorambar</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Gerente de Finanzas — Motorambar</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Empleado de Finanzas (1) — Motorambar</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Empleado de Finanzas (2) — Motorambar</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- RECOMENDACIONES -->
+            <h2 id="recomendaciones">13. Recomendaciones adicionales</h2>
+            <ul>
+                <li>Congelar la versión durante el ciclo de pruebas: cualquier despliegue nuevo al ambiente debe comunicarse y puede requerir re-ejecutar escenarios ya pasados.</li>
+                <li>Probar el batch CPA con los PDFs reales de Motorambar (volumen y calidad de escaneo reales), ya que el cruce por VIN depende de la lectura del documento.</li>
+                <li>Medir tiempos en los escenarios de volumen (importaciones grandes, batch CPA de 50+ páginas, descargas y asignaciones por lote, reportes) y acordar umbrales con el negocio.</li>
+                <li>Probar la integración PDV en ambos sentidos: envío exitoso, fallo y reintento, verificando que no se dupliquen casos en PDV.</li>
+                <li>Incluir una sesión de UAT exploratoria con usuarios finales de Motorambar al terminar el checklist.</li>
+                <li>Verificar el comportamiento de las notificaciones del portal (campana) asociadas a importaciones, CPA y envíos a PDV.</li>
+                <li>Mantener este documento como base de regresión para futuras versiones, actualizando los escenarios cuando cambien las reglas de negocio.</li>
+            </ul>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Módulo Distribuidor — Pruebas End-to-End | Motorambar</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Documento generado: 14 de julio de 2026 | Versión 1.2</p>
+        </footer>
+    </div>
+</body>
+</html>
