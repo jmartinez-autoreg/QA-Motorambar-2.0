@@ -84,6 +84,8 @@ Después de los PRECONDs, continúan los **pasos de ejecución** numerados secue
 4. Clic en el botón 'Guardar'|Se presenta mensaje de éxito 'Pedido creado correctamente' y se redirige a la lista de pedidos
 ```
 
+> ⚠️ **EXPECTED RESULT de PRECOND:** Todas las filas PRECOND deben tener Expected Result vacío visual — en formato texto plano (como arriba) se escribe solo `|` sin contenido después, y en XML se escribe `<BR/>` o `&lt;BR/&gt;`. Solo los pasos de validación/ejecución llevan Expected Result con contenido.
+
 **Ejemplo — TC deps + Datos + Login (tres PRECONDs):**
 ```
 1. PRECOND 0: TC-A (ID XXXX) ejecutado hasta el paso 10; el sistema muestra la pantalla de resultados|

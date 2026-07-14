@@ -266,7 +266,7 @@ Las PRECONDs se numeran **secuencialmente desde 0**. Incluir **solo** las catego
 > - ❌ Adivinar `Acceso portal` cuando no está documentado (ej. dejarlo con `?`) — si `context/UI-UX.md` no lo tiene, preguntar al usuario (AGENTS.md §8.1 y §8.2)
 > - ✅ Un solo row con Shift+Enter entre cada campo
 >
-> ⚠️ **SIN EXPECTED RESULT:** Las filas de PRECOND en ADO llevan únicamente el campo **Action** con el texto de la precondición. El campo **Expected Result debe quedar vacío** en todas las filas de PRECOND. Solo los pasos de ejecución llevan Expected Result.
+> ⚠️ **EXPECTED RESULT VACÍO VISUAL:** Las filas de PRECOND en ADO llevan únicamente el campo **Action** con el texto de la precondición. El campo **Expected Result debe contener solo `<BR/>` (o `&lt;BR/&gt;` en XML)** para que aparezca visualmente vacío en ADO. Solo los pasos de ejecución (ValidateStep/ActionStep) llevan Expected Result con contenido descriptivo.
 
 > **Notación adicional** (detalle completo en `create-test-cases/SKILL.md` §3.1, fuente: GUÍA-QA-Redacción de casos de pruebas v1.00 §3.3):
 > - Letras (`1A`, `1B`...) cuando hay más de una PRECOND del mismo tipo en la misma posición.
