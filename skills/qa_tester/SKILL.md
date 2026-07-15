@@ -47,9 +47,14 @@ Al recibir una US el agente DEBE seguir este orden:
 
 1. **Leer** los criterios de aceptación y UX/UI de la historia
 2. **Revisar la sección Discussion / Comentarios** de la US — buscar escenarios excluidos, criterios modificados o actualizaciones post-redacción
-3. **Identificar** portal, módulo, pantalla para el nombre del TC
-4. **Identificar** usuarios y roles necesarios (PRECOND usuario del sistema)
-5. **Filtrar** cada criterio con la pregunta: *"¿Es esto ejecutable y verificable desde la UI por un tester manual?"*
+3. **Evaluar Story Points** — verificar el campo `Microsoft.VSTS.Scheduling.StoryPoints`:
+   - Si **SP ≤ 2** → proponer al usuario: *"Esta US tiene {SP} story points. ¿Prefieres ejecutar prueba exploratoria directa (sin TC formal) o crear Test Plan completo?"*
+   - Si el usuario elige exploratoria → NO crear TC ni TP formal. Documentar en comentario de la US: `Prueba exploratoria — no requiere Test Plan formal debido a la baja complejidad ({SP} SP).` + descripción breve de qué se validará manualmente
+   - Si el usuario elige TP completo → continuar con el flujo normal
+   - Si **SP > 2** o SP no está definido → continuar con el flujo normal (crear TP formal)
+4. **Identificar** portal, módulo, pantalla para el nombre del TC
+5. **Identificar** usuarios y roles necesarios (PRECOND usuario del sistema)
+6. **Filtrar** cada criterio con la pregunta: *"¿Es esto ejecutable y verificable desde la UI por un tester manual?"*
    - Si **todos** responden NO → US es **Cobertura DEV**: NO crear TC ni TP formal. Documentar en
      comentario de la US: `Cobertura DEV — verificación a cargo del equipo de desarrollo.` + una
      justificación breve **en términos de la aplicación/UI** (ej. "la aplicación no cuenta con
@@ -58,13 +63,12 @@ Al recibir una US el agente DEBE seguir este orden:
      tiene acceso a esa carpeta.
    - Si **algunos** responden NO → excluir esos criterios del TC, incluir solo pasos UI verificables
    - **Señales de Cobertura DEV:** "query en BD", "estructura de tablas", "acceso a base de datos", "código/programación", "appsettings", "worker/Service Bus", "infraestructura", "tabla de settings", "script SQL"
-6. **Preguntar** al usuario si falta información antes de crear cualquier TC
-7. **Aplicar** la regla de división para determinar cuántos TC se necesitan
-8. **Redactar** TCs completos con precondiciones y pasos (acción + resultado esperado)
-9. **Verificar** si la US ya tiene tareas QA en ADO; si no, generar tabla de tareas a crear
-10. **Generar** tabla de tiempo lista para registrar al final del día
-
-11. **Validar formato ADO de pasos** antes de publicar: `N. accion|resultado` con `\n` entre pasos
+7. **Preguntar** al usuario si falta información antes de crear cualquier TC
+8. **Aplicar** la regla de división para determinar cuántos TC se necesitan
+9. **Redactar** TCs completos con precondiciones y pasos (acción + resultado esperado)
+10. **Verificar** si la US ya tiene tareas QA en ADO; si no, generar tabla de tareas a crear
+11. **Generar** tabla de tiempo lista para registrar al final del día
+12. **Validar formato ADO de pasos** antes de publicar: `N. accion|resultado` con `\n` entre pasos
   - PRECOND debe llevar prefijo literal `PRECOND X:` dentro del texto de accion
   - PRECOND sin Expected Result se envía como `...|<BR/>` (tag `<BR/>` queda invisible en ADO pero evita que aparezca texto automático)
   - **Saltos de línea dentro de un PRECOND (Shift+Enter):** usar `<br/>` en el texto del action — NO `\n` (que crea un step nuevo separado). Ejemplo: `PRECOND 0: Login<br/>- Usuario: X<br/>- Rol: Y<br/>- Acceso portal: Z<br/>- Acceso módulo: W`
@@ -910,6 +914,40 @@ Total: 6
 | Crear un TC separado para validar el estado inicial de un elemento (ej. botón deshabilitado sin selección) | Incluir esa verificación como un paso de verificación al inicio del TC del flujo feliz |
 | Generar tabla de tiempo y registrar en Zoho sin confirmación del usuario | Mostrar tabla propuesta y preguntar "¿Estos registros son correctos? ✅" antes de registrar |
 | Asumir qué tareas del día completó el usuario (ej. asumir que hizo Demo solo porque la tarea existe) | Detectar automáticamente vía ADO/bitácora (AGENTS.md §8.6); preguntar solo por lo sin rastro en ADO |
+
+---
+
+---
+
+## Cuándo NO crear Test Plan formal
+
+Hay 2 situaciones donde NO se debe crear TC ni TP formal:
+
+### 1. Story Points ≤ 2 (baja complejidad)
+
+Si la US tiene **2 o menos story points**:
+- **Proponer** al usuario: *"Esta US tiene {SP} story points. ¿Prefieres ejecutar prueba exploratoria directa (sin TC formal) o crear Test Plan completo?"*
+- Si elige **exploratoria** → NO crear TC ni TP. Documentar en comentario de la US:
+  ```
+  Prueba exploratoria — no requiere Test Plan formal debido a la baja complejidad ({SP} SP).
+  
+  Validación manual:
+  - [Describir qué se validará manualmente, basado en los criterios de aceptación]
+  ```
+- Si elige **TP completo** → proceder normalmente con Fase 1
+
+### 2. Cobertura DEV (no testeable desde UI)
+
+Si **todos** los criterios de aceptación son verificaciones de backend/infraestructura sin interfaz de usuario:
+- **Señales:** "query en BD", "estructura de tablas", "acceso a base de datos", "código/programación", "appsettings", "worker/Service Bus", "infraestructura", "tabla de settings", "script SQL"
+- NO crear TC ni TP. Documentar en comentario de la US:
+  ```
+  Cobertura DEV — verificación a cargo del equipo de desarrollo.
+  
+  Justificación: [Explicar por qué no es testeable desde UI, en términos de la aplicación — sin citar rutas internas del repo]
+  ```
+
+> ⚠️ Si **algunos** criterios son UI y otros son backend → crear TC solo para los criterios UI verificables.
 
 ---
 
