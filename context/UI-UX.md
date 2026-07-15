@@ -35,16 +35,20 @@ Copia este bloque por cada pantalla nueva:
 - **Ruta/URL:** `https://testwaf.portaldevehiculos.com/Forms/Account/LoginNew.aspx`
 - **Cómo se llega aquí:** URL directa — pantalla de entrada al sistema
 - **Elementos clave:**
-  | Elemento | Tipo | Texto/label literal | Comportamiento |
-  |---|---|---|---|
-  | Campo Email | input text | placeholder "Email" | entrada de email |
-  | Campo Contraseña | input password | placeholder "Contraseña" | entrada de contraseña |
-  | Checkbox | checkbox | "Recuérdame" | mantener sesión |
-  | Botón Principal | botón | "Iniciar Sesión" | envía credenciales |
-  | Link | enlace | "¿Olvidaste tu contraseña?" | recuperación |
+  | Elemento | Tipo | Texto/label literal | ID confirmado | Comportamiento |
+  |---|---|---|---|---|
+  | Campo Username | input text | placeholder "Email" | `#LoginUser_UserName` | entrada de usuario |
+  | Campo Contraseña | input password | placeholder "Contraseña" | `#LoginUser_Password` | entrada de contraseña |
+  | Checkbox | checkbox | "Recuérdame" | `#LoginUser_RememberMe` | mantener sesión |
+  | Botón Principal | botón | **"INICIAR SESIÓN"** (mayúsculas) | — | envía credenciales |
+  | Link | enlace | "¿Olvidaste tu contraseña?" | — | recuperación |
 - **Estados:** sin datos / con datos / error de validación / autenticando
 - **Screenshot:** ![login-autoreg](screenshots/Distribuidor/Login%20desde%20autoreg%20(funciona%20para%20cliente%20o%20distribuidor).png)
-- **Notas para TCs:** Tras login exitoso, redirige a menú de Autoreg con apps disponibles según rol
+- **Notas para TCs:**
+  - Selectores confirmados con Playwright Codegen (2026-07-15)
+  - Tras login exitoso, redirige a menú de Autoreg con apps disponibles según rol
+  - El botón "Portal Distribuidor" **abre el portal en popup (nueva pestaña)** — usar `waitForEvent('popup')`
+  - Usuario Distribuidor de prueba: `j.distribuidor`
 ---
 
 ## Autoreg > Inicio Post-Login
@@ -399,7 +403,11 @@ Copia este bloque por cada pantalla nueva:
   | Acciones | íconos | lápiz (editar) / papelera (eliminar) | por tenant |
 - **Estados:** con datos / vacío / creando / editando
 - **Screenshot:** ![admin-tenants](screenshots/Distribuidor/Pantalla%20de%20administración%20.png)
-- **Notas para TCs:** Gestión de tenants/organizaciones del sistema
+- **Notas para TCs:**
+  - Esta es la **pantalla de aterrizaje del SysAdmin** al entrar al Portal Distribuidor (no Dashboard)
+  - Login SysAdmin → Autoreg Admin → `#PageFunctionsContent_Nav_imgNavOptions` → link "Portal Distribuidores" → abre popup en esta pantalla
+  - Selector para confirmar aterrizaje: `:is(h1,h2,h3):has-text("Administración")` o `button:has-text("NUEVO TENANT")`
+  - Header muestra: "Case Plus Admin" / "ADMINISTRADOR DEL SISTEMA" (badge morado)
 ---
 
 ## Portal Distribuidor > Administración > Usuarios

@@ -1,0 +1,35 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Variables de ambiente (credenciales)
+.env.playwright
+.env
+
+# Resultados de tests
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Screenshots y videos
+screenshots/
+videos/
+
+# Estado de autenticación
+fixtures/auth.json
+*-state.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Temporal
+.workspace/
+*.tmp

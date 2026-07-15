@@ -150,6 +150,9 @@ npm install --save-dev @playwright/test typescript @types/node
 npx playwright install chromium
 ```
 
+> ⚠️ **FIX #6 — tsconfig.json:** Usar `"moduleResolution": "bundler"`, NO `"node"` (deprecated en TypeScript 5.x+, rompe en TS 7.0).
+> Al crear el proyecto, generar el `tsconfig.json` con `bundler` desde el inicio para evitar el error de compilación.
+
 Crear `playwright.config.ts` con baseURL de la app bajo prueba:
 
 ```ts
@@ -193,6 +196,28 @@ Actualizar `package.json` con scripts estándar:
 > `test:slow` reduce la velocidad de ejecución a 800 ms/acción — usar cuando el usuario quiere
 > verificar visualmente que cada paso ocurre correctamente antes de dar el resultado por bueno.
 > Si `cross-env` no está instalado: `npm install --save-dev cross-env`.
+
+Crear `tsconfig.json` con `moduleResolution: "bundler"` (obligatorio desde TS 5.x):
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "types": ["node", "@playwright/test"]
+  },
+  "include": ["tests/**/*", "fixtures/**/*", "helpers/**/*", "playwright.config.ts"],
+  "exclude": ["node_modules", "dist", "test-results", "playwright-report"]
+}
+```
+⛔ `"moduleResolution": "node"` está deprecated — siempre usar `"bundler"` en proyectos nuevos.
 
 Crear estructura de carpetas mínima:
 ```
@@ -270,6 +295,103 @@ Usuario dice "sigue sin codegen" →  Continuar con FASE 1 (Descubrimiento)
 > ⛔ **El agente NUNCA debe pedir al usuario que instale dependencias, cree carpetas
 > o configure nada.** Toda la preparación técnica es responsabilidad del agente.
 > El único paso del usuario es ejecutar el comando codegen y pegar el resultado.
+
+---
+
+## ⛔ REGLAS ANTI-FALLO — Aprendidas en producción (NO omitir)
+
+### FIX #1 — waitForURL solo con URL confirmada
+> **Nunca usar `waitForURL()` con un patrón asumido** para confirmar que una navegación ocurrió.
+> Si la URL real post-acción no fue confirmada por MCP Browser o Codegen, usar en su lugar:
+> ```ts
+> // ✅ Esperar un elemento de la pantalla destino (más robusto)
+> await page.getByRole('button', { name: 'Portal Distribuidor' }).waitFor({ state: 'visible', timeout: 30_000 });
+> // En vez de:
+> // ❌ await page.waitForURL(/\/Forms\/Account\/Default\.aspx|\/$/i, { timeout: 30_000 });
+> ```
+> `waitForURL` solo se usa cuando la URL destino fue copiada literalmente del Codegen o del browser.
+
+### FIX #2 — Verificar unicidad de selectores text= antes de usarlos
+> Antes de usar cualquier selector `text=XXX` o `'XXX'` en modo estricto, verificar unicidad:
+> ```js
+> // Ejecutar en MCP Browser — debe retornar exactamente 1
+> document.querySelectorAll('SELECTOR').length
+> ```
+> Si retorna > 1 → usar selector más específico (`:is(h1,h2):has-text("X")`, `getByRole('heading', { name: 'X' })`, etc.).
+> ⛔ `text=Dashboard` puede resolver a nav-link + heading + subheading + badge al mismo tiempo.
+
+### FIX #3 — Leer el archivo completo antes de un reemplazo masivo
+> Cuando una edición elimina más del 30% del contenido de un archivo (ej: reemplazar todos los tests):
+> 1. Leer el archivo completo primero.
+> 2. Usar un `oldString` que cubra DESDE la primera línea que se va a cambiar HASTA la última que se va a eliminar.
+> 3. Verificar con `npx tsc --noEmit` después de cada cambio destructivo.
+> ⛔ Un `oldString` pequeño (solo el import) dejará código fantasma al final del archivo.
+
+### FIX #4 — Preservar .click() antes de .fill() del Codegen
+> El Codegen genera `.click()` + `.fill()` en cada campo de formulario. **NO omitir el `.click()`**.
+> En ASP.NET WebForms y algunos SPAs el focus explícito activa validadores cliente y listeners.
+> ```ts
+> // ✅ Tal como genera el Codegen:
+> await page.locator('#LoginUser_UserName').click();
+> await page.locator('#LoginUser_UserName').fill(credentials.email);
+> // ❌ NO simplificar a solo .fill() sin haber verificado que funciona sin .click()
+> ```
+
+### FIX #5 — Verificar pantalla de aterrizaje por cada rol en flows multi-rol
+> Antes de escribir el `expect` post-login en un test multi-rol:
+> 1. Consultar `context/CONTEXT.md` § Roles y Permisos — cada rol puede tener pantalla inicial distinta.
+> 2. Si no está documentado → hacer discovery o pedir screenshot al usuario.
+> 3. Usar selectores diferentes por rol en el fixture:
+>    - Distribuidor/Cliente → `SEL.dashboard.title`
+>    - SysAdmin → `SEL.adminPage.title`
+> ⛔ Asumir que todos los roles aterrizan en Dashboard = fallo garantizado para SysAdmin.
+
+### FIX #7 — Post-Codegen: discovery obligatorio antes de escribir assertions
+> El Codegen confirma QUÉ flujo seguir y QUÉ acciones realizar. **No confirma:**
+> - Qué pantalla exacta ve cada rol al finalizar el flujo
+> - Si los selectores de confirmación (`text=X`) son únicos en esa pantalla
+>
+> ⛔ **REGLA:** Después de recibir el Codegen del usuario y ANTES de escribir el fixture/spec:
+>
+> **Paso A — Confirmar pantalla destino por rol (multi-rol flows)**
+> ```
+> Para cada rol del test:
+>   1. Navegar la app con ese usuario hasta la pantalla destino (MCP Browser o Codegen grabado)
+>   2. Anotar: ¿Qué heading / elemento único identifica que aterrizó donde debe?
+>   3. Documentar en UI-UX.md si no estaba registrado
+>   4. Solo entonces escribir el selector de confirmación en el fixture
+> ```
+>
+> **Paso B — Verificar unicidad de cada selector de confirmación**
+> ```js
+> // Ejecutar en MCP Browser en la pantalla destino
+> document.querySelectorAll('TU_SELECTOR').length  // debe ser === 1
+> // Si > 1 → usar selector más específico antes de escribir el expect()
+> ```
+>
+> **Paso C — Verificar comportamiento de navegación**
+> ```
+> ¿El link/botón abre en la misma pestaña o en popup?
+>   Misma pestaña → waitForURL o waitFor(element)
+>   Popup → page.waitForEvent('popup') ANTES del click
+> ```
+> El Codegen lo indica cuando escribe `const page1Promise = page.waitForEvent('popup')`.
+> Si el Codegen NO incluye ese patrón para un link externo, verificar en MCP si tiene `target="_blank"`.
+>
+> **Resumen del flujo post-Codegen correcto:**
+> ```
+> Usuario pega Codegen
+>   ↓
+> Leer flujo (pantallas, acciones, usuarios) — el Codegen es el MAPA
+>   ↓
+> Para cada pantalla destino del flujo:
+>   ↓
+>   Navegar con MCP Browser + ejecutar JS inventory (IDs reales)
+>   Confirmar heading/selector único de la pantalla — verificar .length === 1
+>   Si multi-rol: repetir por cada rol (pueden aterrizar en pantallas distintas)
+>   ↓
+> Con IDs reales + pantallas confirmadas → escribir fixture y spec
+> ```
 
 ---
 
@@ -1305,8 +1427,15 @@ funcional. Esto duplica el test, confunde el reporte y oculta la causa real de f
         → Navegar con MCP Browser
         → Ejecutar JS inventory (ver REGLA 0)
         → Anotar id real de cada elemento interactivo
+        → **Verificar pantalla destino por ROL**: si el flujo involucra más de un rol,
+          navegar con cada usuario y confirmar qué heading/elemento aparece tras la acción.
+          ⛔ NUNCA asumir que todos los roles aterrizan en la misma pantalla.
+        → **Verificar unicidad de cada selector de confirmación (assertions)**:
+          `document.querySelectorAll('SELECTOR').length` debe ser === 1.
+          Si > 1 → buscar selector más específico `:is(h1,h2):has-text("X")` o `#id` antes de continuar.
    c. Identificar flujos condicionales (modales opcionales) → consolidar en try/catch
-   d. Solo continuar cuando TODOS los IDs estén confirmados y credenciales estén en .env.playwright
+   d. Solo continuar cuando TODOS los IDs estén confirmados, pantallas destino por rol verificadas,
+      y credenciales en .env.playwright
    ↓
 1. Leer TODO el fixture y el spec existentes
    ↓
