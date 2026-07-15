@@ -135,7 +135,7 @@ Sin esto → el siguiente test recibe "token revocado" o "El token ha sido revoc
 
 | Helper | Descripción |
 |--------|-------------|
-| `logoutPortal(portalPage)` | Click perfil → "Cerrar sesión" en el portal. Confirma redirección a sso-login. |
+| `logoutPortal(portalPage)` | Navega al home → click perfil → "Cerrar sesión". Cierra modal si quedó abierto. |
 | `closePortalTabs(page)` | Cierra todas las pestañas del portal que no sean la de Autoreg. |
 
 ### Espera post-SSO (patrón confirmado)
@@ -148,6 +148,135 @@ await portal.locator('h2:has-text("Dashboard")').waitFor({ state: 'visible', tim
 // ❌ Incorrecto — waitForPageIdle es lento y puede agotar la sesión SSO
 await waitForPageIdle(portal);
 ```
+
+### Navegación directa dentro del portal
+
+Después del SSO, usar `goto` directo en lugar de click en el menú lateral:
+```typescript
+await portal.goto('https://motorambartest.portaldevehiculos.com/import');    // Vehículos Importados
+await portal.goto('https://motorambartest.portaldevehiculos.com/');          // Dashboard
+```
+
+---
+
+## Automatización E2E — Componentes Custom del Portal
+
+> ⛔ El portal usa componentes React personalizados con comportamiento diferente al HTML estándar.
+> Leer esta sección ANTES de escribir interacciones con cualquier componente de filtros.
+
+### DcMultiValueInput — Input de valores múltiples
+
+**Componente:** `frontend/src/components/ui/DcMultiValueInput.tsx`
+**Usado en:** Filtros VIN, Factura, Carta de Crédito, Orden de Venta, Concesionario, Institución Financiera
+
+**Comportamiento confirmado (análisis de código fuente):**
+- Al hacer **click** en el campo → se abre un **textarea** flotante
+- El usuario escribe en el **textarea** (NO en el input directamente)
+- Al hacer **click fuera** del textarea → se procesan y crean los chips
+
+**Separadores por campo:**
+| Campo | Separador para múltiples valores |
+|---|---|
+| VIN | espacio, coma, salto de línea (default) |
+| N.º Factura | espacio, coma, salto de línea (default) |
+| N.º Carta de Crédito | espacio, coma, salto de línea (default) |
+| N.º Orden de Venta | espacio, coma, salto de línea (default) |
+| Concesionario | solo salto de línea (`\n`) — un valor a la vez |
+| Institución Financiera | solo salto de línea (`\n`) — un valor a la vez |
+
+**Patrón CORRECTO en Playwright:**
+```typescript
+// Helper reutilizable — SIEMPRE usar este patrón para DcMultiValueInput
+async function fillMultiValueInput(portal: Page, inputSelector: string, value: string): Promise<void> {
+  await portal.locator(inputSelector).click();          // abre el textarea
+  await portal.locator('textarea').last().fill(value);  // escribe en el textarea
+  await portal.locator('h1').click();                   // click fuera → cierra y crea chips
+}
+
+// Para VIN (múltiples separados por espacio):
+await fillMultiValueInput(portal, 'input[placeholder="Buscar por VIN"]', 'JN8BT3BA5TW332643 JN8BT3BA6TW332702');
+
+// Para Concesionario (un solo valor, Enter es el separador):
+await fillMultiValueInput(portal, 'input[placeholder="Buscar por nombre o licencia..."]', 'MEDINA NISSAN');
+```
+
+**⛔ PATRÓN INCORRECTO:**
+```typescript
+// NO hacer esto — fill() en el input no abre el textarea
+await portal.locator('input[placeholder="Buscar por VIN"]').fill('JN8BT3BA5TW332643');
+await portal.locator('input[placeholder="Buscar por VIN"]').press('Enter'); // no funciona
+```
+
+### DcMultiSelect — Dropdown de selección múltiple
+
+**Componente:** `frontend/src/components/ui/DcMultiSelect.tsx`
+**Usado en:** Estado CO, Estado CPA, Estado de Factura, Marca
+
+**Comportamiento:**
+- Click en el botón → abre un dropdown con `input[placeholder="Buscar..."]` + lista `ul li button`
+- Hay un overlay `[aria-label="Close dropdown"]` que cierra el dropdown al hacer click fuera
+
+**Opciones confirmadas en DOM (2026-07-15):**
+| Filtro | Opciones disponibles |
+|---|---|
+| Estado CO | `Pendiente`, `Completado` |
+| Estado CPA | `Pendiente`, `Completado` |
+| Estado de Factura | `Pendiente`, `Completado` |
+| Marca | `Infiniti`, `Kia`, `Nissan` |
+
+**Patrón CORRECTO en Playwright:**
+```typescript
+await portal.locator('button:has-text("Estado CO")').click();
+await portal.locator('input[placeholder="Buscar..."]').first().waitFor({ state: 'visible', timeout: 5_000 });
+await portal.locator('ul li button:has-text("Pendiente")').first().click();
+await portal.locator('[aria-label="Close dropdown"]').click();  // cerrar overlay
+await waitForGridLoad(portal);
+```
+
+### DcDatePicker — Selector de fecha
+
+**Componente:** `frontend/src/components/ui/DcDatePicker.tsx`
+**Usado en:** Filtro de rango de fechas (header de Vehículos Importados)
+**Selector:** `button:has-text("Seleccionar fecha")` o `button:has-text("2026")` cuando tiene fecha
+
+**Pendiente documentar:** patrón de interacción para selección de rango de fechas.
+
+### LocationDropDown — Dropdown de localidades
+
+**Componente:** `frontend/src/app/common/LocationDropDown.tsx`
+**Usado en:** Filtro de localidad (header de Vehículos Importados)
+**Selector:** `button:has-text("Todas las Localidades")`
+
+**Pendiente documentar:** opciones disponibles y patrón de selección.
+
+---
+
+## Automatización E2E — URLs del Portal (confirmadas)
+
+| Pantalla | URL real (confirmada en DOM) |
+|---|---|
+| Dashboard | `https://motorambartest.portaldevehiculos.com/` |
+| Vehículos Importados | `https://motorambartest.portaldevehiculos.com/import` |
+| Importar Vehículos | `https://motorambartest.portaldevehiculos.com/import/upload` |
+| Historial de Importaciones | `https://motorambartest.portaldevehiculos.com/import/history` |
+
+> ⛔ La URL `/vehicles` NO existe — produce 404. Siempre usar `/import`.
+
+---
+
+## Automatización E2E — Datos de Test (ambiente Test)
+
+### Vehículos Importados — Datos reales
+
+| Tipo | Valores confirmados |
+|---|---|
+| VINs | `JN8BT3BA5TW332643`, `JN8BT3BA6TW332702`, `JN8BT3BAXTW332704`, `JN8BT3BA4TW332469`, `JN8BT3BA3TW332494` |
+| Facturas | `90625423`, `90625418`, `90625416`, `90625415`, `90625417` |
+| Cartas de Crédito | `100503`, `90631885` |
+| Órdenes de Venta | `89012039`, `89012083` |
+| Concesionarios (Dealer) | `MEDINA NISSAN`, `CABRERA GRUPO AUTOMOTRIZ, LLC` |
+| Instituciones Financieras | `POPULAR AUTO`, `FIRSTBANK` |
+| Marcas disponibles | `Infiniti`, `Kia`, `Nissan` |
 
 ---
 

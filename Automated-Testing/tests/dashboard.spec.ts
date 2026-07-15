@@ -42,7 +42,7 @@ async function loginAndOpenPortal(
   await portalBtn.waitFor({ state: 'visible', timeout: 30_000 });
 
   // Registrar popup ANTES del click — evita race condition
-  const popupPromise = page.waitForEvent('popup');
+  const popupPromise = page.waitForEvent('popup', { timeout: 30_000 });
   await portalBtn.click();
   const portal = await popupPromise;
 

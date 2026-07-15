@@ -94,15 +94,26 @@ export async function logoutPortal(portalPage: Page): Promise<void> {
   try {
     const url = portalPage.url();
     if (!url.includes('motorambartest.portaldevehiculos.com')) return;
-    // Si ya está en sso-login no hay sesión activa
     if (url.includes('sso-login')) return;
 
-    // Abrir dropdown de perfil — selector robusto: área del header con el nombre/rol del usuario
-    // Confirmado en DOM: generic[cursor-pointer] dentro del banner que contiene los párrafos de nombre y rol
+    // PASO 1: Navegar al home para salir de cualquier modal o estado intermedio
+    // (después de una descarga el modal puede seguir abierto y bloquear el header)
+    await portalPage.goto('https://motorambartest.portaldevehiculos.com/');
+    await portalPage.locator('h2:has-text("Dashboard")').waitFor({ state: 'visible', timeout: 15_000 });
+
+    // PASO 2: Cerrar modal si quedó abierto (Escape)
+    const modal = portalPage.locator('[role="dialog"]');
+    if (await modal.isVisible().catch(() => false)) {
+      await portalPage.keyboard.press('Escape');
+      await modal.waitFor({ state: 'hidden', timeout: 3_000 }).catch(() => {});
+    }
+
+    // PASO 3: Click en el área de perfil del header para abrir dropdown
     const profileArea = portalPage.locator('header [class*="cursor-pointer"]').last();
+    await profileArea.waitFor({ state: 'visible', timeout: 5_000 });
     await profileArea.click();
 
-    // Click en "Cerrar sesión" — único en el dropdown (confirmado .length === 1)
+    // PASO 4: Click en "Cerrar sesión"
     const cerrarSesionBtn = portalPage.getByRole('button', { name: 'Cerrar sesión' });
     await cerrarSesionBtn.waitFor({ state: 'visible', timeout: 5_000 });
     await cerrarSesionBtn.click();

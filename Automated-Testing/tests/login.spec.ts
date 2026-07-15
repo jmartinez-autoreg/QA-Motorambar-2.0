@@ -44,7 +44,7 @@ async function loginAndOpenPortal(
   await portalBtn.waitFor({ state: 'visible', timeout: 30_000 });
 
   // Portal Distribuidor abre en popup (nueva pestaña)
-  const popupPromise = page.waitForEvent('popup');
+  const popupPromise = page.waitForEvent('popup', { timeout: 30_000 });
   await portalBtn.click();
   const portal = await popupPromise;
 
@@ -75,7 +75,7 @@ async function loginSysAdminAndOpenPortal(
   await page.locator('#PageFunctionsContent_Nav_imgNavOptions').click();
 
   // Click en "Portal Distribuidores" → abre popup
-  const popupPromise = page.waitForEvent('popup');
+  const popupPromise = page.waitForEvent('popup', { timeout: 30_000 });
   await page.getByRole('link', { name: 'Portal Distribuidores' }).click();
   const portal = await popupPromise;
 
