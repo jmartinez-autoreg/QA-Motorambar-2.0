@@ -26,8 +26,7 @@ export const SEL_VEHICLES = {
   marcaBtn:         'button:has-text("Marca")',
 
   // ── Header: Localidad + Fecha ────────────────────────────────────────────
-  localidadBtn:     'button:has-text("Todas las Localidades")',
-  fechaBtn:         'button:has-text("Seleccionar fecha")',
+  // (selectores completos definidos abajo en sus secciones respectivas)
 
   // ── Más Filtros (toggle y campos ocultos) ────────────────────────────────
   masFiltrosBtn:    'button:has-text("Más Filtros")',
@@ -37,6 +36,20 @@ export const SEL_VEHICLES = {
   // ── Acciones ─────────────────────────────────────────────────────────────
   actualizarBtn:    'button:has-text("Actualizar")',
   limpiarFiltrosBtn: 'button:has-text("Limpiar filtros")',
+
+  // ── Fecha (DcDatePicker) ─────────────────────────────────────────────────
+  // Trigger: texto "Seleccionar fecha" hasta que se selecciona un valor
+  fechaBtn:         'button:has-text("Seleccionar fecha")',
+  // Tabs de modo (confirmados en i18n: ui.es.json)
+  fechaModoMes:     'button:has-text("Mes")',
+  fechaModoRango:   'button:has-text("Rango")',
+  // Footer del picker: "Cancelar" y "OK"
+  fechaOkBtn:       'button:has-text("OK")',
+  fechaCancelBtn:   'button:has-text("Cancelar")',
+
+  // ── Localidad (LocationDropDown → DcSearchableSelect) ────────────────────
+  // Trigger: "Todas las Localidades" cuando no hay selección
+  localidadBtn:     'button:has-text("Todas las Localidades")',
 
   // ── Grid / resultados ────────────────────────────────────────────────────
   // Tabla con los vehículos
@@ -97,7 +110,8 @@ export const TEST_VEHICLE_DATA = {
   salesOrders: ['89012039', '89012083'],
   singleSalesOrder: '89012039',
 
-  // Más Filtros — un valor por input (separadorChars=["\n"], usar Enter)
+  // Concesionarios (Dealer) — confirmados en DOM real 2026-07-15
+  // (error-context reveló: HENRY MOTORS, ABAB CORPORATION, ADRIEL KIA, MEDINA NISSAN)
   dealer: 'MEDINA NISSAN',
   financialInstitution: 'POPULAR AUTO',
 

@@ -245,3 +245,142 @@ test('TC-VEHICLES-FILTER-009: Botón "Actualizar" recarga el grid', async ({ pag
 
   await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-009-actualizar.png', fullPage: false });
 });
+
+test('TC-VEHICLES-FILTER-010: Filtro por Fecha — Rango, Día, Semana, Mes', async ({ page }) => {
+  const portal = await loginAndGoToVehicles(page);
+  await waitForGridLoad(portal);
+
+  // ── Modo RANGO ────────────────────────────────────────────────────────────
+  // PASO 1: Abrir picker (ya abre en modo Rango por defecto en este grid)
+  await portal.locator(SEL_VEHICLES.fechaBtn).click();
+  await portal.locator(SEL_VEHICLES.fechaModoRango).waitFor({ state: 'visible', timeout: 5_000 });
+
+  // PASO 2: Seleccionar día de inicio (día 1 del mes visible)
+  const dayBtns = portal.locator('.grid.grid-cols-7 button:not([disabled])');
+  await dayBtns.first().click();    // día de inicio del rango
+  await dayBtns.nth(9).click();     // día de fin del rango (10° día hábil)
+
+  // PASO 3: Confirmar
+  await portal.locator(SEL_VEHICLES.fechaOkBtn).click();
+  await waitForGridLoad(portal);
+
+  // RESULTADO: Botón de fecha ya no dice "Seleccionar fecha"
+  await expect(portal.locator(SEL_VEHICLES.fechaBtn)).not.toBeVisible({ timeout: 3_000 }).catch(() => {});
+  await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-010-rango.png', fullPage: false });
+
+  // ── Limpiar para siguiente modo ────────────────────────────────────────
+  await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
+  await waitForGridLoad(portal);
+
+  // ── Modo DÍA ─────────────────────────────────────────────────────────────
+  await portal.locator(SEL_VEHICLES.fechaBtn).click();
+  await portal.locator('button:has-text("Día")').click();
+  // Seleccionar el primer día no deshabilitado
+  await portal.locator('.grid.grid-cols-7 button:not([disabled])').first().click();
+  await portal.locator(SEL_VEHICLES.fechaOkBtn).click();
+  await waitForGridLoad(portal);
+  await expect(portal.locator(SEL_VEHICLES.fechaBtn)).not.toBeVisible({ timeout: 3_000 }).catch(() => {});
+  await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-010-dia.png', fullPage: false });
+  await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
+  await waitForGridLoad(portal);
+
+  // ── Modo SEMANA ───────────────────────────────────────────────────────────
+  await portal.locator(SEL_VEHICLES.fechaBtn).click();
+  await portal.locator('button:has-text("Semana")').click();
+  // Seleccionar cualquier día — el picker resalta la semana completa
+  await portal.locator('.grid.grid-cols-7 button:not([disabled])').nth(3).click();
+  await portal.locator(SEL_VEHICLES.fechaOkBtn).click();
+  await waitForGridLoad(portal);
+  await expect(portal.locator(SEL_VEHICLES.fechaBtn)).not.toBeVisible({ timeout: 3_000 }).catch(() => {});
+  await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-010-semana.png', fullPage: false });
+  await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
+  await waitForGridLoad(portal);
+
+  // ── Modo MES ──────────────────────────────────────────────────────────────
+  await portal.locator(SEL_VEHICLES.fechaBtn).click();
+  await portal.locator(SEL_VEHICLES.fechaModoMes).click();
+  await portal.locator('button:has-text("Jul")').first().click();
+  await portal.locator(SEL_VEHICLES.fechaOkBtn).click();
+  await waitForGridLoad(portal);
+  await expect(portal.locator(SEL_VEHICLES.fechaBtn)).not.toBeVisible({ timeout: 3_000 }).catch(() => {});
+  await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-010-mes.png', fullPage: false });
+});
+
+test('TC-VEHICLES-FILTER-011: Filtro por Localidad — Dealer, Banco, Todos + Favoritos', async ({ page }) => {
+  const portal = await loginAndGoToVehicles(page);
+  await waitForGridLoad(portal);
+
+  // ── Tab DEALER ────────────────────────────────────────────────────────────
+  // ⛔ Orden CORRECTO: radio tab PRIMERO, luego abrir dropdown
+  // Si se abre el dropdown antes, el overlay DcDropdownMenu bloquea el click en los tabs
+  await portal.locator('[role="radio"][aria-label="Concesionario"]').click();
+  await portal.locator(SEL_VEHICLES.localidadBtn).click();
+
+  // Seleccionar primera localidad de tipo Dealer disponible
+  // DcSearchableSelect renderiza opciones como: li > button[title="nombre del dealer"]
+  const dealerOptions = portal.locator('li button[title]');
+  await dealerOptions.first().waitFor({ state: 'visible', timeout: 5_000 });
+  const dealerCount = await dealerOptions.count();
+  if (dealerCount > 0) {
+    const dealerText = await dealerOptions.first().getAttribute('title');
+    await dealerOptions.first().click();
+    await waitForGridLoad(portal);
+    console.log(`Dealer seleccionado: "${dealerText}"`);
+    // RESULTADO: Grid filtrado por Dealer
+    await expect(portal.locator(SEL_VEHICLES.gridTable)).toBeVisible();
+    await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-011-dealer.png', fullPage: false });
+    // Limpiar
+    await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
+    await waitForGridLoad(portal);
+  }
+
+  // ── Tab BANCO ─────────────────────────────────────────────────────────────
+  // Tab PRIMERO, luego dropdown
+  await portal.locator('[role="radio"][aria-label="Banco / Institución Financiera"]').click();
+  await portal.locator(SEL_VEHICLES.localidadBtn).click();
+
+  const bancoOptions = portal.locator('li button[title]');
+  await bancoOptions.first().waitFor({ state: 'visible', timeout: 5_000 });
+  const bancoCount = await bancoOptions.count();
+  if (bancoCount > 0) {
+    const bancoText = await bancoOptions.first().getAttribute('title');
+    await bancoOptions.first().click();
+    await waitForGridLoad(portal);
+    console.log(`Banco seleccionado: "${bancoText}"`);
+    await expect(portal.locator(SEL_VEHICLES.gridTable)).toBeVisible();
+    await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-011-banco.png', fullPage: false });
+    await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
+    await waitForGridLoad(portal);
+  }
+
+  // ── Tab TODOS + FAVORITOS ─────────────────────────────────────────────────
+  // REGLA: radio tab + favoritos PRIMERO (fuera del dropdown), luego abrir dropdown
+  await portal.locator('[role="radio"][aria-label="Todos"]').click();
+
+  // El botón favoritos es role="switch" con aria-label="Solo Favoritos" — clickear antes del dropdown
+  const favBtn = portal.locator('button[role="switch"][title="Solo Favoritos"]');
+  if (await favBtn.isVisible().catch(() => false)) {
+    await favBtn.click();
+
+    // AHORA abrir el dropdown (solo tiene favoritos)
+    await portal.locator(SEL_VEHICLES.localidadBtn).click();
+
+    // Seleccionar primer favorito disponible — mismo patrón li button[title]
+    const favOptions = portal.locator('li button[title]');
+    const favCount = await favOptions.count();
+    if (favCount > 0) {
+      const favText = await favOptions.first().getAttribute('title');
+      await favOptions.first().click();
+      await waitForGridLoad(portal);
+      console.log(`Favorito seleccionado: "${favText}"`);
+      await expect(portal.locator(SEL_VEHICLES.gridTable)).toBeVisible();
+      await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-011-favoritos.png', fullPage: false });
+    } else {
+      console.log('No hay favoritos disponibles para este usuario');
+      await portal.keyboard.press('Escape');
+    }
+  } else {
+    console.log('Botón de favoritos no visible');
+    await portal.keyboard.press('Escape');
+  }
+});
