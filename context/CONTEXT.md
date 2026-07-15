@@ -95,6 +95,62 @@
 
 ---
 
+## Automatización E2E — Reglas Obligatorias (Portal SSO)
+
+> ⛔ Estas reglas aplican a TODOS los specs que abran el Portal Distribuidor.
+> El agente debe aplicarlas automáticamente al crear cualquier nuevo spec — sin que el usuario tenga que recordarlo.
+
+### Comportamiento SSO del Portal
+
+- El Portal Distribuidor (`motorambartest.portaldevehiculos.com`) usa **SSO federado** desde Autoreg.
+- Flujo de apertura: Autoreg (`/Default.aspx`) → click "Portal Distribuidor" → **popup** con `sso-login#token=JWT` → redirige a `/`
+- El token SSO del portal expira en **~60 segundos** — el test debe completarse antes de que expire.
+- Si hay una sesión activa del mismo usuario, el nuevo token es **revocado** → el portal vuelve a `sso-login`.
+
+### Regla OBLIGATORIA: afterEach con logout en TODO spec
+
+Cada spec que abra el portal popup **DEBE** incluir este `afterEach`:
+
+```typescript
+test.afterEach(async ({ page }) => {
+  const portalPage = page.context().pages().find(p =>
+    !p.isClosed() && p.url().includes('motorambartest.portaldevehiculos.com')
+  );
+  if (portalPage) await logoutPortal(portalPage);
+  await closePortalTabs(page);
+});
+```
+
+Sin esto → el siguiente test recibe "token revocado" o "El token ha sido revocado o es inválido".
+
+### Usuarios de prueba (ambiente Test)
+
+| Rol | Usuario | Contraseña | Archivo |
+|-----|---------|------------|---------|
+| Distribuidor | `test.distribuidor` | `123456` | `.env.playwright` |
+| Cliente | `test.cliente.toyota` | `123456` | `.env.playwright` |
+| SysAdmin | `test.admin` | `123456` | `.env.playwright` |
+
+### Helpers disponibles (`Automated-Testing/helpers/auth-helpers.ts`)
+
+| Helper | Descripción |
+|--------|-------------|
+| `logoutPortal(portalPage)` | Click perfil → "Cerrar sesión" en el portal. Confirma redirección a sso-login. |
+| `closePortalTabs(page)` | Cierra todas las pestañas del portal que no sean la de Autoreg. |
+
+### Espera post-SSO (patrón confirmado)
+
+```typescript
+// ✅ Correcto — más rápido y preserva la sesión
+await portal.waitForFunction(() => !window.location.href.includes('sso-login'), { timeout: 30_000 });
+await portal.locator('h2:has-text("Dashboard")').waitFor({ state: 'visible', timeout: 30_000 });
+
+// ❌ Incorrecto — waitForPageIdle es lento y puede agotar la sesión SSO
+await waitForPageIdle(portal);
+```
+
+---
+
 ## Terminología Literal (NO cambiar nombres)
 
 | Término en sistema | Descripción |

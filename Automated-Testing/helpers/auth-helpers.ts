@@ -6,7 +6,7 @@ import { waitForPageIdle } from './wait-helpers';
  */
 export const TEST_USERS = {
   distribuidor: {
-    email: process.env.TEST_USER_DISTRIBUIDOR || 'j.distribuidor',
+    email: process.env.TEST_USER_DISTRIBUIDOR || 'test.distribuidor',
     password: process.env.TEST_PASS_DISTRIBUIDOR || '123456',
   }
 } as const;
@@ -34,10 +34,15 @@ export async function loginAutoreg(
   await page.locator('#LoginUser_UserName').fill(credentials.email);
   await page.locator('#LoginUser_Password').fill(credentials.password);
 
-  // Botón confirmado: texto en mayúsculas "INICIAR SESIÓN"
-  await page.getByText('INICIAR SESIÓN', { exact: true }).click();
+  // #btnTriggerLogin: ID confirmado en DOM (PRIORITY 1) — reemplaza getByText('INICIAR SESIÓN')
+  await page.locator('#LoginUser_UserName').click();
+  await page.locator('#LoginUser_UserName').fill(credentials.email);
+  await page.locator('#LoginUser_Password').click();
+  await page.locator('#LoginUser_Password').fill(credentials.password);
+  await page.locator('#btnTriggerLogin').click();
 
-  await page.waitForURL(/\/Forms\/Account\/Default\.aspx|\/$/i, { timeout: 30_000 });
+  // Post-login URL confirmada: /Default.aspx (no /Forms/Account/Default.aspx)
+  await page.waitForURL(/\/Default\.aspx/i, { timeout: 30_000 });
   await waitForPageIdle(page);
 }
 
@@ -71,4 +76,56 @@ export async function loginFullFlow(
 
   await loginAutoreg(page, credentials);
   return navigateToPortalDistribuidor(page);
+}
+
+/**
+ * Logout desde el Portal Distribuidor — limpia la sesión SSO activa.
+ *
+ * Flujo confirmado con MCP Browser discovery (2026-07-15):
+ *   1. Click en el área de perfil del header (contiene nombre + rol del usuario)
+ *   2. Click en "Cerrar sesión" — único en el DOM cuando el dropdown está abierto
+ *
+ * ⛔ OBLIGATORIO en afterEach() de TODO spec que abra el portal popup.
+ *    Sin logout, el servidor revoca el token SSO del siguiente test.
+ */
+export async function logoutPortal(portalPage: Page): Promise<void> {
+  if (portalPage.isClosed()) return;
+
+  try {
+    const url = portalPage.url();
+    if (!url.includes('motorambartest.portaldevehiculos.com')) return;
+    // Si ya está en sso-login no hay sesión activa
+    if (url.includes('sso-login')) return;
+
+    // Abrir dropdown de perfil — selector robusto: área del header con el nombre/rol del usuario
+    // Confirmado en DOM: generic[cursor-pointer] dentro del banner que contiene los párrafos de nombre y rol
+    const profileArea = portalPage.locator('header [class*="cursor-pointer"]').last();
+    await profileArea.click();
+
+    // Click en "Cerrar sesión" — único en el dropdown (confirmado .length === 1)
+    const cerrarSesionBtn = portalPage.getByRole('button', { name: 'Cerrar sesión' });
+    await cerrarSesionBtn.waitFor({ state: 'visible', timeout: 5_000 });
+    await cerrarSesionBtn.click();
+
+    // Esperar redirección post-logout
+    await portalPage.waitForURL(/sso-login|login/i, { timeout: 10_000 }).catch(() => {});
+  } catch {
+    // Si falla el logout limpio, cerrar la pestaña directamente
+    await portalPage.close().catch(() => {});
+  }
+}
+
+/**
+ * Cierra todas las pestañas del portal (popups).
+ * Llamar DESPUÉS de logoutPortal para limpiar el contexto completamente.
+ */
+export async function closePortalTabs(page: Page): Promise<void> {
+  const context = page.context();
+  const pages = context.pages();
+
+  for (const p of pages) {
+    if (p !== page && p.url().includes('motorambartest.portaldevehiculos.com')) {
+      await p.close().catch(() => {});
+    }
+  }
 }

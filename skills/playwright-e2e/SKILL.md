@@ -412,6 +412,32 @@ Usuario dice "sigue sin codegen" →  Continuar con FASE 1 (Descubrimiento)
 > Si al cerrar un spec yo sé que omití ejecutarlo → activar REGLA 1 yo mismo,
 > sin esperar que el usuario lo señale. Esperar = fallo crítico del agente.
 
+### FIX #9 — Portales SSO con popup: afterEach obligatorio en TODO spec
+
+> Cuando la app bajo prueba abre el portal en un **popup SSO** (patrón: Autoreg → click → popup con `sso-login#token=...`),
+> CADA spec que abra ese popup **DEBE** incluir este `afterEach` sin excepción:
+>
+> ```typescript
+> test.afterEach(async ({ page }) => {
+>   const portalPage = page.context().pages().find(p =>
+>     !p.isClosed() && p.url().includes('<dominio-del-portal>')
+>   );
+>   if (portalPage) await logoutPortal(portalPage);
+>   await closePortalTabs(page);
+> });
+> ```
+>
+> **Por qué:** El servidor SSO revoca el token si detecta una sesión activa del mismo usuario.
+> Sin logout → el siguiente test recibe "token revocado o inválido" → fallo en cadena.
+>
+> ⛔ **Nunca** confiar en que el test "cierra el tab" como sustituto de logout.
+> Cerrar el tab sin logout deja la sesión activa en el servidor.
+>
+> **Verificar en `context/CONTEXT.md` § "Automatización E2E — Reglas Obligatorias":**
+> Si el proyecto tiene esta sección documentada, leerla ANTES de crear cualquier nuevo spec
+> que abra un portal federado. Los helpers (`logoutPortal`, `closePortalTabs`) ya existen
+> en `helpers/auth-helpers.ts` — no recrearlos.
+
 ---
 
 ## FASE 1 — Descubrimiento de la Aplicación

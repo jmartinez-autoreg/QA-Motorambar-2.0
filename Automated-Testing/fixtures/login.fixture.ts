@@ -5,12 +5,13 @@ import { Page } from '@playwright/test';
  * Basados en context/UI-UX.md - Pantalla: Autoreg > Login
  */
 export const SEL = {
-  // Página de Login — IDs confirmados con Playwright Codegen
+  // Página de Login — IDs confirmados con Playwright Codegen + MCP Browser discovery
   login: {
     emailInput: '#LoginUser_UserName',
     passwordInput: '#LoginUser_Password',
-    rememberCheckbox: '#LoginUser_RememberMe',    // pendiente confirmar en discovery
-    loginButton: 'text=INICIAR SESIÓN',
+    rememberCheckbox: '#LoginUser_RememberMe',
+    // #btnTriggerLogin: ID real confirmado en DOM (PRIORITY 1) — reemplaza getByText('INICIAR SESIÓN')
+    loginButton: '#btnTriggerLogin',
     forgotPasswordLink: 'text=¿Olvidaste tu contraseña?',
   },
   
@@ -55,15 +56,15 @@ export const URLS = {
  */
 export const TEST_DATA = {
   distribuidor: {
-    email: process.env.TEST_USER_DISTRIBUIDOR || 'j.distribuidor',
+    email: process.env.TEST_USER_DISTRIBUIDOR || 'test.distribuidor',
     password: process.env.TEST_PASS_DISTRIBUIDOR || '123456',
   },
   cliente: {
-    email: process.env.TEST_USER_CLIENTE || 'jovidio',
+    email: process.env.TEST_USER_CLIENTE || 'test.cliente.toyota',
     password: process.env.TEST_PASS_CLIENTE || '123456',
   },
   sysadmin: {
-    email: process.env.TEST_USER_SYSADMIN || 'caseplusadmin',
+    email: process.env.TEST_USER_SYSADMIN || 'test.admin',
     password: process.env.TEST_PASS_SYSADMIN || '123456',
   },
 };

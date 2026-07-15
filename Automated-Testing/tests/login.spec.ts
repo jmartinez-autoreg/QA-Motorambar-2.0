@@ -1,15 +1,26 @@
 import { test, expect, Page } from '@playwright/test';
 import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
 import { waitForPageIdle } from '../helpers/wait-helpers';
+import { logoutPortal, closePortalTabs } from '../helpers/auth-helpers';
 
 /**
  * Flujo confirmado con Playwright Codegen:
- * 1. Login en Autoreg (#LoginUser_UserName / #LoginUser_Password / "INICIAR SESIÓN")
- * 2. Click en "Portal Distribuidor" → abre en POPUP (nueva pestaña)
+ * 1. Login en Autoreg (#LoginUser_UserName / #LoginUser_Password / #btnTriggerLogin)
+ * 2. Click "Portal Distribuidor" → abre en POPUP (nueva pestaña)
  * 3. Verifica Dashboard del Portal Motorambar en la nueva pestaña
  *
  * ⚠️ Login es un sistema federado — solo se prueba el happy path por rol.
+ * afterEach: logout del Portal para evitar conflicto de tokens SSO entre tests.
  */
+
+// Logout del portal + cierre del popup después de cada test
+test.afterEach(async ({ page }) => {
+  const portalPage = page.context().pages().find(p =>
+    !p.isClosed() && p.url().includes('motorambartest.portaldevehiculos.com')
+  );
+  if (portalPage) await logoutPortal(portalPage);
+  await closePortalTabs(page);
+});
 
 /** Helper: login + navega al popup del Portal Distribuidor (Distribuidor / Cliente) */
 async function loginAndOpenPortal(
@@ -23,7 +34,8 @@ async function loginAndOpenPortal(
   await page.locator(SEL.login.emailInput).fill(credentials.email);
   await page.locator(SEL.login.passwordInput).click();
   await page.locator(SEL.login.passwordInput).fill(credentials.password);
-  await page.getByText('INICIAR SESIÓN', { exact: true }).click();
+  // #btnTriggerLogin: ID confirmado en DOM discovery (PRIORITY 1)
+  await page.locator(SEL.login.loginButton).click();
 
   // Esperar el botón "Portal Distribuidor" — confirma que el login fue exitoso
   const portalBtn = page.getByRole(SEL.autoregHome.portalDistribuidorButton.role, {

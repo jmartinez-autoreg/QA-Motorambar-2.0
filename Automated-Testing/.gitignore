@@ -1,3 +1,6 @@
+# Archivos descargados por los tests
+TEMP/
+
 # Dependencias
 node_modules/
 package-lock.json
