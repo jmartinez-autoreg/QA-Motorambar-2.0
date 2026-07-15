@@ -69,20 +69,28 @@ Formato HTML literal para Azure DevOps:
 
 ### 3. Criterios de aceptación — formato Gherkin en HTML
 
-Formato HTML que va al campo `Microsoft.VSTS.Common.AcceptanceCriteria`. Los criterios se redactan en **Gherkin** (`Dado que / Cuando / Entonces / Y`), envueltos en `<ul><li>` con `<br/>` entre líneas. Cada escenario es un `<li>` independiente:
+Formato HTML que va al campo `Microsoft.VSTS.Common.AcceptanceCriteria`. Los criterios se redactan en **Gherkin** (`Dado que / Cuando / Entonces / Y`), envueltos en `<ul><li>` con `<br/>` entre líneas. 
+
+**Cada escenario debe tener:**
+1. **Título descriptivo en negrita** (`<strong>Escenario X: [descripción]</strong>`)
+2. **Doble salto de línea** después del título (`<br/><br/>`)
+3. Líneas Gherkin con salto simple entre ellas (`<br/>`)
+4. **Doble salto de línea** al final del escenario para separación visual (`<br/><br/>`)
 
 ```html
 <ul>
   <li>
+    <strong>Escenario 1: [Título descriptivo del caso de uso]</strong><br/><br/>
     Dado que [contexto o estado inicial]<br/>
     Cuando [acción del usuario o evento]<br/>
     Entonces [resultado esperado observable]<br/>
-    Y [condición adicional — si aplica]
+    Y [condición adicional — si aplica]<br/><br/>
   </li>
   <li>
-    Dado que [otro escenario]<br/>
+    <strong>Escenario 2: [Otro título descriptivo]</strong><br/><br/>
+    Dado que [otro contexto]<br/>
     Cuando [acción]<br/>
-    Entonces [resultado]
+    Entonces [resultado]<br/><br/>
   </li>
 </ul>
 ```
@@ -180,16 +188,28 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 
 <!-- Criterios -->
 <ul>
-  <li><p style="display:inline !important;">Campos obligatorios marcados con *: </p></li>
+  <li>
+    <strong>Escenario 1: [Acción] exitosa con datos válidos</strong><br/><br/>
+    Dado que estoy en [pantalla/sección]<br/>
+    Cuando completo los campos obligatorios y presiono <strong>[Botón Acción]</strong><br/>
+    Entonces se guarda/actualiza el registro<br/>
+    Y se muestra mensaje <em>"[Mensaje UI exitoso]"</em><br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Validación de campos obligatorios</strong><br/><br/>
+    Dado que estoy en [pantalla/sección]<br/>
+    Cuando intento [acción] sin completar los campos marcados con *<br/>
+    Entonces se bloquea la acción<br/>
+    Y se resaltan los campos faltantes con mensaje de error<br/><br/>
+  </li>
+  <li>
+    <p style="display:inline !important;">Campos obligatorios marcados con *: </p>
+  </li>
   <ul>
     <li><strong>VIN</strong> * (17 caracteres alfanuméricos, único). </li>
     <li><strong>Estado</strong> * (selección: Available, Reserved, Sold, InTransit, Retired). </li>
     <li><strong>[Otro campo]</strong> * (validación específica). </li>
   </ul>
-  <li>Botón <strong>[Acción]</strong> visible en [ubicación]. </li>
-  <li>Al guardar, se actualizan los datos y el estado se mantiene/cambia a [Estado]. </li>
-  <li>Mensaje de éxito: <em>"[Mensaje UI]"</em>. </li>
-  <li>Validación de duplicados: VIN debe ser único en el sistema. </li>
   <li>Auditoría: usuario, fecha, campos modificados. </li>
 </ul>
 ```
@@ -202,14 +222,20 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 
 <!-- Criterios -->
 <ul>
-  <li>Al hacer <strong>[Acción]</strong>, validar que [regla específica con valores]. </li>
-  <li>Si [condición de fallo], bloquear [Acción]. </li>
-  <li><p style="display:inline !important;">Mostrar mensaje claro: </p></li>
-  <ul>
-    <li><em>"[Mensaje literal UI]"</em></li>
-  </ul>
-  <li>El vehículo/registro queda en estado <strong>[Estado]</strong>. </li>
-  <li>Registrar intento fallido en auditoría. </li>
+  <li>
+    <strong>Escenario 1: Validación exitosa</strong><br/><br/>
+    Dado que [contexto donde aplica la regla]<br/>
+    Cuando intento [acción] con datos que cumplen [regla específica]<br/>
+    Entonces la acción se completa exitosamente<br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Validación fallida</strong><br/><br/>
+    Dado que [contexto donde aplica la regla]<br/>
+    Cuando intento [acción] con datos que NO cumplen [regla específica]<br/>
+    Entonces se bloquea la acción<br/>
+    Y se muestra mensaje <em>"[Mensaje literal UI explicando el error]"</em><br/><br/>
+  </li>
+  <li>Registrar intento fallido en auditoría con usuario, fecha, motivo. </li>
 </ul>
 ```
 
@@ -221,15 +247,27 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 
 <!-- Criterios -->
 <ul>
-  <li>Acción <strong>[Verbo]</strong> disponible solo en estado(s) <strong>[Estados]</strong>. </li>
-  <li>Visible solo para rol(es): <strong>[Roles]</strong>. </li>
-  <li><p style="display:inline !important;">Modal de confirmación con: </p></li>
+  <li>
+    <strong>Escenario 1: Cambio de estado exitoso</strong><br/><br/>
+    Dado que el [entidad] está en estado <strong>[Estado Origen]</strong> y tengo rol <strong>[Rol permitido]</strong><br/>
+    Cuando presiono <strong>[Verbo/Acción]</strong> y confirmo en el modal<br/>
+    Entonces el estado cambia a <strong>[Estado Destino]</strong><br/>
+    Y se muestra mensaje <em>"[Mensaje UI exitoso]"</em><br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Cambio de estado bloqueado por estado incorrecto</strong><br/><br/>
+    Dado que el [entidad] está en estado <strong>[Estado No Permitido]</strong><br/>
+    Cuando intento presionar <strong>[Verbo/Acción]</strong><br/>
+    Entonces el botón NO está visible o está deshabilitado<br/><br/>
+  </li>
+  <li>
+    <p style="display:inline !important;">Modal de confirmación con: </p>
+  </li>
   <ul>
     <li>Título: <em>"[Título Modal]"</em>. </li>
     <li>Campo <strong>[Campo]</strong> * (requerido/opcional, X-Y caracteres). </li>
-    <li>Botones Cancelar y [Acción]. </li>
+    <li>Botones <strong>Cancelar</strong> y <strong>[Acción]</strong>. </li>
   </ul>
-  <li>Al confirmar, estado pasa de <strong>[Estado Origen]</strong> a <strong>[Estado Destino]</strong>. </li>
   <li>Notificación a [destinatarios] con asunto: <em>"[Asunto Email]"</em>. </li>
   <li>Auditoría con usuario, fecha, estado origen, estado destino, motivo/observación. </li>
 </ul>
@@ -243,7 +281,22 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 
 <!-- Criterios -->
 <ul>
-  <li><p style="display:inline !important;">Columnas: </p></li>
+  <li>
+    <strong>Escenario 1: Visualización de bandeja con datos</strong><br/><br/>
+    Dado que tengo permisos para ver [entidades]<br/>
+    Cuando accedo a [nombre de bandeja/pantalla]<br/>
+    Entonces se muestra una tabla con columnas [listar columnas clave]<br/>
+    Y cada fila muestra la información del [entidad] con sus acciones disponibles<br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Aplicación de filtros</strong><br/><br/>
+    Dado que estoy en la bandeja de [entidades]<br/>
+    Cuando selecciono criterios en los filtros disponibles (Estado, rango de fechas, etc.)<br/>
+    Entonces la bandeja se actualiza mostrando solo los registros que cumplen los filtros<br/><br/>
+  </li>
+  <li>
+    <p style="display:inline !important;">Columnas: </p>
+  </li>
   <ul>
     <li>VIN. </li>
     <li>Estado (con badge de color). </li>
@@ -251,12 +304,6 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
     <li>Año. </li>
     <li>Fecha de registro. </li>
     <li>Acciones. </li>
-  </ul>
-  <li><p style="display:inline !important;">Filtros disponibles: </p></li>
-  <ul>
-    <li>Estado (multiselección). </li>
-    <li>Rango de fechas. </li>
-    <li>Búsqueda por VIN. </li>
   </ul>
   <li>Paginación: 10/25/50/100 filas por página + "Página X de Y". </li>
   <li>Selección múltiple con indicador <em>"X de Y vehículos seleccionados"</em>. </li>
@@ -273,16 +320,21 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 
 <!-- Criterios -->
 <ul>
-  <li>Disponible solo para vehículos en estado <strong>InTransit</strong>. </li>
-  <li><p style="display:inline !important;">Campos a actualizar: </p></li>
-  <ul>
-    <li><strong>Ubicación actual</strong> * (texto libre o selección). </li>
-    <li><strong>Fecha/Hora</strong> * (automático, timestamp). </li>
-    <li><strong>Observaciones</strong> (opcional, 0-200 caracteres). </li>
-  </ul>
-  <li>Historial de ubicaciones visible en orden cronológico (más reciente primero). </li>
-  <li>Mapa (opcional) mostrando última ubicación conocida. </li>
-  <li>Notificación al <strong>Cliente</strong> con cada actualización de ubicación. </li>
+  <li>
+    <strong>Escenario 1: Actualización de ubicación exitosa</strong><br/><br/>
+    Dado que el vehículo está en estado <strong>InTransit</strong> y tengo rol <strong>[Transportista/Logística]</strong><br/>
+    Cuando actualizo la ubicación ingresando <strong>Ubicación actual</strong> * y <strong>Observaciones</strong> (opcional)<br/>
+    Entonces se guarda la nueva ubicación con timestamp automático<br/>
+    Y se envía notificación al <strong>Cliente</strong> con la actualización<br/>
+    Y el historial de ubicaciones se actualiza mostrando la más reciente primero<br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Consulta de historial de tracking</strong><br/><br/>
+    Dado que soy [Cliente/Gerente] con permisos de consulta<br/>
+    Cuando accedo al detalle del vehículo en estado <strong>InTransit</strong><br/>
+    Entonces veo el historial completo de ubicaciones en orden cronológico (más reciente primero)<br/>
+    Y cada entrada muestra ubicación, fecha/hora, observaciones, usuario<br/><br/>
+  </li>
   <li>Auditoría con usuario, fecha, ubicación anterior y nueva. </li>
 </ul>
 ```
@@ -326,16 +378,23 @@ Patrones adicionales obligatorios dentro de los escenarios Gherkin:
 **Criterios de aceptación (HTML)**:
 ```html
 <ul>
-  <li>Al intentar registrar un vehículo, el sistema valida que el <strong>VIN no exista</strong> previamente en la base de datos. </li>
-  <li>Si el VIN ya existe, no permite guardar. </li>
-  <li><p style="display:inline !important;">Mostrar mensaje claro: </p></li>
-  <ul>
-    <li><em>"El VIN [VIN] ya está registrado en el sistema (ID: [ID_VEHICULO]). No se puede registrar un vehículo duplicado."</em></li>
-  </ul>
-  <li>El formulario permanece abierto con los datos ingresados para que el usuario pueda corregir el VIN. </li>
-  <li>Campo VIN se resalta en rojo con mensaje de error debajo del campo. </li>
+  <li>
+    <strong>Escenario 1: Registro exitoso con VIN único</strong><br/><br/>
+    Dado que estoy registrando un nuevo vehículo<br/>
+    Cuando ingreso un <strong>VIN</strong> que NO existe en el sistema (17 caracteres alfanuméricos válidos)<br/>
+    Entonces el sistema permite continuar con el registro<br/>
+    Y se guarda el vehículo exitosamente<br/><br/>
+  </li>
+  <li>
+    <strong>Escenario 2: Registro bloqueado por VIN duplicado</strong><br/><br/>
+    Dado que estoy registrando un nuevo vehículo<br/>
+    Cuando ingreso un <strong>VIN</strong> que ya existe en el sistema<br/>
+    Entonces se bloquea el guardado<br/>
+    Y se muestra mensaje <em>"El VIN [VIN] ya está registrado en el sistema (ID: [ID_VEHICULO]). No se puede registrar un vehículo duplicado."</em><br/>
+    Y el campo VIN se resalta en rojo con mensaje de error debajo<br/>
+    Y el formulario permanece abierto con los datos ingresados<br/><br/>
+  </li>
   <li>El intento fallido de registro se registra en auditoría con usuario, fecha, VIN duplicado. </li>
-  <li>Si el VIN es único y cumple el formato (17 caracteres alfanuméricos), permite continuar con el registro. </li>
 </ul>
 ```
 
