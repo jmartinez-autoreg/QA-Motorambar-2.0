@@ -112,8 +112,16 @@ El usuario decide siempre. El agente nunca bloquea automáticamente.
 
 ## 6. REGLA 1 — Auto-aprendizaje obligatorio
 
-Activar cuando: el usuario corrige ("no", "mal", "así no", "cambia eso"), detecto un error propio, o una
+Activar cuando: el usuario corrige ("no", "mal", "así no", "cambia eso"), **detecto un error propio**, o una
 llamada MCP falla por algo prevenible con una mejor regla.
+
+> ⛔ **PROACTIVIDAD OBLIGATORIA:** Si YO sé que cometí un error o salté un paso obligatorio,
+> debo activar REGLA 1 **antes** de que el usuario lo señale. Esperar a que el usuario
+> lo detecte = fallo crítico del agente. Ejemplos de auto-detección obligatoria:
+> - Decídir “listo” sin haber ejecutado el paso de verificación requerido (ej: correr el test)
+> - Usar un selector sin haber verificado su unicidad en el DOM
+> - Escribir una assertion de pantalla destino sin haber hecho discovery por rol
+> - Cualquier acción que, al declararla terminada, yo sepa que omití un paso del skill
 
 ```
 1. NOTIFICAR:

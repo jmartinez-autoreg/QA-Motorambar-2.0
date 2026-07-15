@@ -346,7 +346,7 @@ Usuario dice "sigue sin codegen" →  Continuar con FASE 1 (Descubrimiento)
 >    - SysAdmin → `SEL.adminPage.title`
 > ⛔ Asumir que todos los roles aterrizan en Dashboard = fallo garantizado para SysAdmin.
 
-### FIX #7 — Post-Codegen: discovery obligatorio antes de escribir assertions
+### FIX #7 — Post-Codegen: discovery de pantallas destino ANTES de escribir assertions
 > El Codegen confirma QUÉ flujo seguir y QUÉ acciones realizar. **No confirma:**
 > - Qué pantalla exacta ve cada rol al finalizar el flujo
 > - Si los selectores de confirmación (`text=X`) son únicos en esa pantalla
@@ -392,6 +392,25 @@ Usuario dice "sigue sin codegen" →  Continuar con FASE 1 (Descubrimiento)
 >   ↓
 > Con IDs reales + pantallas confirmadas → escribir fixture y spec
 > ```
+
+### FIX #8 — `npx tsc --noEmit` NO es evidencia de que el test pasa
+> Compilación TypeScript exitosa = el código no tiene errores de sintaxis/tipos.
+> **NO significa que el test ejecuta correctamente contra la app.**
+>
+> ⛔ **PROHIBIDO** declarar un test como "listo" o "✅" basándose solo en `tsc --noEmit`.
+>
+> **Paso obligatorio antes de declarar cualquier spec como listo:**
+> ```bash
+> npx playwright test <nombre>.spec.ts --headed
+> ```
+> La ÚNICA fuente de verdad es el output mostrando `X passed, 0 failed`.
+> Si el test no se puede correr en ese momento → declarar explícitamente:
+> *"Código creado y compila. Pendiente ejecutar contra la app para confirmar."*
+> ⛔ Nunca omitir esa advertencia ni reemplazarla por "✅ listo".
+>
+> **Auto-detección obligatoria (REGLA 1 proactiva):**
+> Si al cerrar un spec yo sé que omití ejecutarlo → activar REGLA 1 yo mismo,
+> sin esperar que el usuario lo señale. Esperar = fallo crítico del agente.
 
 ---
 
