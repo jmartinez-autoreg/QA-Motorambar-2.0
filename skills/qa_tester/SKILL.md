@@ -66,9 +66,8 @@ Al recibir una US el agente DEBE seguir este orden:
 
 11. **Validar formato ADO de pasos** antes de publicar: `N. accion|resultado` con `\n` entre pasos
   - PRECOND debe llevar prefijo literal `PRECOND X:` dentro del texto de accion
-  - PRECOND sin resultado se envía como `...|` (vacío)
+  - PRECOND sin Expected Result se envía como `...|<BR/>` (tag `<BR/>` queda invisible en ADO pero evita que aparezca texto automático)
   - **Saltos de línea dentro de un PRECOND (Shift+Enter):** usar `<br/>` en el texto del action — NO `\n` (que crea un step nuevo separado). Ejemplo: `PRECOND 0: Login<br/>- Usuario: X<br/>- Rol: Y<br/>- Acceso portal: Z<br/>- Acceso módulo: W`
-  - En ADO puede aparecer `Verify step completes successfully` por comportamiento de plataforma; no es error de estructura
 
 > **Regla de oro:** NO crear un TC por cada criterio de aceptación.
 > Cubrir todos los criterios posibles en un solo TC cuando comparten el mismo flujo.
@@ -266,7 +265,7 @@ Las PRECONDs se numeran **secuencialmente desde 0**. Incluir **solo** las catego
 > - ❌ Adivinar `Acceso portal` cuando no está documentado (ej. dejarlo con `?`) — si `context/UI-UX.md` no lo tiene, preguntar al usuario (AGENTS.md §8.1 y §8.2)
 > - ✅ Un solo row con Shift+Enter entre cada campo
 >
-> ⚠️ **EXPECTED RESULT VACÍO VISUAL:** Las filas de PRECOND en ADO llevan únicamente el campo **Action** con el texto de la precondición. El campo **Expected Result debe contener solo `<BR/>` (o `&lt;BR/&gt;` en XML)** para que aparezca visualmente vacío en ADO. Solo los pasos de ejecución (ValidateStep/ActionStep) llevan Expected Result con contenido descriptivo.
+> ⚠️ **SIN EXPECTED RESULT:** Las filas de PRECOND en ADO llevan únicamente el campo **Action** con el texto de la precondición. El campo **Expected Result debe quedar vacío** en todas las filas de PRECOND. Solo los pasos de ejecución llevan Expected Result.
 
 > **Notación adicional** (detalle completo en `create-test-cases/SKILL.md` §3.1, fuente: GUÍA-QA-Redacción de casos de pruebas v1.00 §3.3):
 > - Letras (`1A`, `1B`...) cuando hay más de una PRECOND del mismo tipo en la misma posición.

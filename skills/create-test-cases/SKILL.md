@@ -84,8 +84,6 @@ Después de los PRECONDs, continúan los **pasos de ejecución** numerados secue
 4. Clic en el botón 'Guardar'|Se presenta mensaje de éxito 'Pedido creado correctamente' y se redirige a la lista de pedidos
 ```
 
-> ⚠️ **EXPECTED RESULT de PRECOND:** Todas las filas PRECOND deben tener Expected Result vacío visual — en formato texto plano (como arriba) se escribe solo `|` sin contenido después, y en XML se escribe `<BR/>` o `&lt;BR/&gt;`. Solo los pasos de validación/ejecución llevan Expected Result con contenido.
-
 **Ejemplo — TC deps + Datos + Login (tres PRECONDs):**
 ```
 1. PRECOND 0: TC-A (ID XXXX) ejecutado hasta el paso 10; el sistema muestra la pantalla de resultados|
@@ -247,7 +245,7 @@ mcp_ado_testplan_update_test_case_steps(
 - Cada paso: `N. texto de la acción|texto del resultado esperado`
 - Separador entre pasos: `\n` (salto de línea real)
 - Separador acción/resultado: `|` (pipe)
-- PRECONDs sin resultado: dejar vacío después del `|` (ADO agrega texto genérico automáticamente)
+- PRECONDs sin resultado: `...|<BR/>` (el tag `<BR/>` queda invisible en ADO pero evita texto automático)
 - NO usar comillas dobles dentro del contenido de los pasos
 
 ### Paso C — Agregar al Test Suite (opcional)
@@ -341,4 +339,4 @@ Esperar confirmación ("dale", "sí", "ok") antes de crear en ADO.
 - Los TCs se crean con estado `Design` por defecto
 - El campo `steps` en ADO usa formato XML interno (`<steps>` con `<step>` tags)
 - La tool `update_test_case_steps` convierte el formato `N. acción|resultado` a XML automáticamente
-- Si un PRECOND no tiene resultado esperado, ADO agrega "Verify step completes successfully" — esto es aceptable para precondiciones
+- PRECONDs usan `<BR/>` como Expected Result: se traduce a `<P><BR/></P>` en XML (invisible pero no vacío, evita texto automático de ADO)
