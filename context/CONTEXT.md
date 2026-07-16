@@ -138,6 +138,30 @@ Sin esto → el siguiente test recibe "token revocado" o "El token ha sido revoc
 | `logoutPortal(portalPage)` | Navega al home → click perfil → "Cerrar sesión". Cierra modal si quedó abierto. |
 | `closePortalTabs(page)` | Cierra todas las pestañas del portal que no sean la de Autoreg. |
 
+### Términos y Condiciones (modal condicional — primera sesión)
+
+- Aparece en Autoreg **solo en la primera sesión** de un usuario nuevo o después de actualización de T&C.
+- Si en 4 segundos post-login no aparece → ignorar (no volverá en esa sesión).
+- **Selectores confirmados con Playwright Codegen (2026-07-16):**
+
+```typescript
+// Contenedor del modal
+'#divTermConditions'
+
+// 4 checkboxes obligatorios (marcar todos antes de habilitar el botón)
+'#ucTermsConditions_gvTermConditionsBullets_chkChecked_0'
+'#ucTermsConditions_gvTermConditionsBullets_chkChecked_1'
+'#ucTermsConditions_gvTermConditionsBullets_chkChecked_2'
+'#ucTermsConditions_gvTermConditionsBullets_chkChecked_3'
+
+// Botón Continuar (solo habilitado cuando todos los checks están marcados)
+'#ucTermsConditions_btnSubmit'
+```
+
+- **Helper disponible:** `handleTermsAndConditions(page)` en `helpers/auth-helpers.ts`
+- **Llamar SIEMPRE después de `#btnTriggerLogin`** y antes de esperar "Portal Distribuidor"
+- Patrón try/catch: timeout = sin modal = continue; no lanza error
+
 ### Espera post-SSO (patrón confirmado)
 
 ```typescript

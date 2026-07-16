@@ -5,7 +5,7 @@ import {
   TEST_VEHICLE_DATA, MARCA_OPTIONS, DROPDOWN_CLOSE,
 } from '../fixtures/vehicles-filters.fixture';
 import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs } from '../helpers/auth-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
 
 /**
  * Suite: Vehículos Importados — Filtros
@@ -28,6 +28,9 @@ async function loginAndGoToVehicles(page: Page): Promise<Page> {
   await page.locator(SEL.login.passwordInput).click();
   await page.locator(SEL.login.passwordInput).fill(TEST_DATA.distribuidor.password);
   await page.locator(SEL.login.loginButton).click();
+
+  // Términos y Condiciones: solo aparece en primera sesión, espera 4s máx
+  await handleTermsAndConditions(page);
 
   const portalBtn = page.getByRole(SEL.autoregHome.portalDistribuidorButton.role, {
     name: SEL.autoregHome.portalDistribuidorButton.name,

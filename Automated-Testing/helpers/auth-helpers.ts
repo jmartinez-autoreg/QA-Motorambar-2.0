@@ -2,6 +2,43 @@ import { Page } from '@playwright/test';
 import { waitForPageIdle } from './wait-helpers';
 
 /**
+ * Maneja el modal de Términos y Condiciones en Autoreg (opcional — primera sesión).
+ *
+ * Confirmado con Playwright Codegen (2026-07-16):
+ *   Contenedor : #divTermConditions
+ *   Checkboxes : #ucTermsConditions_gvTermConditionsBullets_chkChecked_0..3
+ *   Botón      : #ucTermsConditions_btnSubmit ("Continuar")
+ *
+ * Comportamiento: espera 4 segundos tras el login.
+ *   - Si el modal aparece → marca todos los checkboxes y hace click en Continuar.
+ *   - Si NO aparece     → continúa sin hacer nada (el modal no volverá a aparecer).
+ *
+ * ⛔ No presionar el botón si el modal no está completamente aceptado — el servidor
+ *    valida que todos los checks estén marcados antes de habilitar el botón.
+ */
+export async function handleTermsAndConditions(page: Page): Promise<void> {
+  try {
+    // Esperar máximo 4s — si no aparece, el modal no está pendiente
+    await page.locator('#divTermConditions').waitFor({ state: 'visible', timeout: 4_000 });
+
+    // Modal apareció → marcar los 4 checkboxes
+    await page.locator('#ucTermsConditions_gvTermConditionsBullets_chkChecked_0').check();
+    await page.locator('#ucTermsConditions_gvTermConditionsBullets_chkChecked_1').check();
+    await page.locator('#ucTermsConditions_gvTermConditionsBullets_chkChecked_2').check();
+    await page.locator('#ucTermsConditions_gvTermConditionsBullets_chkChecked_3').check();
+
+    // Click en "Continuar" — solo después de marcar todos los checks
+    await page.locator('#ucTermsConditions_btnSubmit').click();
+
+    // Esperar que el modal se cierre
+    await page.locator('#divTermConditions').waitFor({ state: 'hidden', timeout: 10_000 });
+    await waitForPageIdle(page);
+  } catch {
+    // Timeout → modal no apareció → continuar normalmente (no es un error)
+  }
+}
+
+/**
  * Credenciales de test desde variables de ambiente
  */
 export const TEST_USERS = {

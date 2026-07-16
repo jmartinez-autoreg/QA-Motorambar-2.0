@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
 import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs } from '../helpers/auth-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
 
 /**
  * Flujo confirmado con Playwright Codegen:
@@ -37,6 +37,9 @@ async function loginAndOpenPortal(
   // #btnTriggerLogin: ID confirmado en DOM discovery (PRIORITY 1)
   await page.locator(SEL.login.loginButton).click();
 
+  // Términos y Condiciones: solo aparece en primera sesión, espera 4s máx
+  await handleTermsAndConditions(page);
+
   // Esperar el botón "Portal Distribuidor" — confirma que el login fue exitoso
   const portalBtn = page.getByRole(SEL.autoregHome.portalDistribuidorButton.role, {
     name: SEL.autoregHome.portalDistribuidorButton.name,
@@ -66,6 +69,9 @@ async function loginSysAdminAndOpenPortal(
   await page.locator(SEL.login.passwordInput).click();
   await page.locator(SEL.login.passwordInput).fill(credentials.password);
   await page.getByText('INICIAR SESIÓN', { exact: true }).click();
+
+  // Términos y Condiciones: solo aparece en primera sesión, espera 4s máx
+  await handleTermsAndConditions(page);
 
   // SysAdmin aterriza en página de administración
   await page.goto('https://testwaf.portaldevehiculos.com/Forms/Admin/AdministerUsers.aspx');

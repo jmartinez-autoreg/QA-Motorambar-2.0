@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
 import { SEL_DASHBOARD, DASHBOARD_TEST_DATA } from '../fixtures/dashboard.fixture';
 import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs } from '../helpers/auth-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
 
 /**
  * Suite: Dashboard — Descarga de Reportes
@@ -34,6 +34,9 @@ async function loginAndOpenPortal(
   await page.locator(SEL.login.passwordInput).click();
   await page.locator(SEL.login.passwordInput).fill(credentials.password);
   await page.locator(SEL.login.loginButton).click();
+
+  // Términos y Condiciones: solo aparece en primera sesión, espera 4s máx
+  await handleTermsAndConditions(page);
 
   // Esperar botón "Portal Distribuidor" — confirma login exitoso
   const portalBtn = page.getByRole(SEL.autoregHome.portalDistribuidorButton.role, {
