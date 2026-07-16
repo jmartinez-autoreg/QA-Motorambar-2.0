@@ -1,11 +1,11 @@
 import { test, expect, Page } from '@playwright/test';
-import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
+import { SEL, URLS, TEST_DATA } from '../../fixtures/login/login.fixture';
 import {
   SEL_VEHICLES, VEHICLES_URLS,
   TEST_VEHICLE_DATA, MARCA_OPTIONS, DROPDOWN_CLOSE,
-} from '../fixtures/vehicles-filters.fixture';
-import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
+} from '../../fixtures/vehicles/filters.fixture';
+import { waitForPageIdle } from '../../helpers/wait-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../../helpers/auth-helpers';
 
 /**
  * Suite: Vehículos Importados — Filtros

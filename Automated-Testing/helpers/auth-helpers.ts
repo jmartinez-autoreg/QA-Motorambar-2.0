@@ -18,13 +18,12 @@ import { waitForPageIdle } from './wait-helpers';
  */
 export async function handleTermsAndConditions(page: Page): Promise<void> {
   try {
-    // PASO 1: Esperar que la página post-login esté completamente cargada
-    // Esto garantiza que el conteo de 4s empieza DESPUÉS del DOM ready,
-    // no durante la navegación (frágil contra cold start o servidores lentos)
-    await page.waitForURL(/\/Default\.aspx/i, { timeout: 30_000 });
-    await page.waitForLoadState('domcontentloaded', { timeout: 15_000 });
+    // PASO 1: Esperar que la navegación post-login se estabilice
+    // Usamos waitForLoadState en lugar de waitForURL para ser agnóstico a la URL destino
+    // (el T&C puede aparecer en Default.aspx o en una URL intermedia)
+    await page.waitForLoadState('domcontentloaded', { timeout: 30_000 });
 
-    // PASO 2: AHORA iniciar el conteo de 4s — la página ya está cargada
+    // PASO 2: AHORA iniciar el conteo de 4s — el DOM está listo
     await page.locator('#divTermConditions').waitFor({ state: 'visible', timeout: 4_000 });
 
     // Modal apareció → marcar los 4 checkboxes

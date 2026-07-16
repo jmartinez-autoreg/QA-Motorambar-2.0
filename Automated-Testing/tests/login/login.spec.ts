@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
-import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
-import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
+import { SEL, URLS, TEST_DATA } from '../../fixtures/login/login.fixture';
+import { waitForPageIdle } from '../../helpers/wait-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../../helpers/auth-helpers';
 
 /**
  * Flujo confirmado con Playwright Codegen:

@@ -1,8 +1,8 @@
 import { test, expect, Page } from '@playwright/test';
-import { SEL, URLS, TEST_DATA } from '../fixtures/login.fixture';
-import { SEL_DASHBOARD, DASHBOARD_TEST_DATA } from '../fixtures/dashboard.fixture';
-import { waitForPageIdle } from '../helpers/wait-helpers';
-import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../helpers/auth-helpers';
+import { SEL, URLS, TEST_DATA } from '../../fixtures/login/login.fixture';
+import { SEL_DASHBOARD, DASHBOARD_TEST_DATA } from '../../fixtures/dashboard/export-report.fixture';
+import { waitForPageIdle } from '../../helpers/wait-helpers';
+import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../../helpers/auth-helpers';
 
 /**
  * Suite: Dashboard — Descarga de Reportes
