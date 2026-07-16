@@ -1,8 +1,160 @@
-# Automated Testing - Portal Motorambar
+# Automated Testing — Portal Distribuidor Motorambar
 
-Pruebas E2E automatizadas con Playwright para el Portal de Distribución de Vehículos Motorambar.
+Pruebas E2E automatizadas con Playwright para el Portal de Distribución de Vehículos.
 
-## 📋 Estructura del Proyecto
+---
+
+## Estructura del Proyecto
+
+```
+Automated-Testing/
+├── playwright.config.ts         ← Config centralizada de pools y ejecución
+├── .env.playwright              ← Credenciales de test (gitignored)
+├── .gitignore
+├── package.json
+├── tsconfig.json
+│
+├── tests/                       ← Specs organizados por pantalla (Screaming Architecture)
+│   ├── login/
+│   │   └── login.spec.ts        ← Pool 1: Login SSO (3 roles)
+│   ├── dashboard/
+│   │   └── export-report.spec.ts  ← Pool 2: Descarga de reportes
+│   └── vehicles/
+│       └── filters.spec.ts      ← Pool 3: Filtros de Vehículos Importados
+│
+├── fixtures/                    ← Page Objects / selectores por pantalla
+│   ├── login/
+│   │   └── login.fixture.ts
+│   ├── dashboard/
+│   │   └── export-report.fixture.ts
+│   └── vehicles/
+│       └── filters.fixture.ts
+│
+├── helpers/                     ← Helpers compartidos (no por pantalla)
+│   ├── auth-helpers.ts          ← logoutPortal, closePortalTabs, handleTermsAndConditions
+│   └── wait-helpers.ts          ← waitForPageIdle, waitForLoadersGone
+│
+├── TEMP/
+│   └── Downloads/               ← Archivos descargados por los tests (gitignored)
+│
+├── README.md                    ← Este archivo
+└── Automated-Context.md         ← Reglas de operación del agente de automatización
+```
+
+---
+
+## Arquitectura de Pools
+
+Los pools permiten ejecutar grupos de tests en paralelo entre sí, con aislamiento por pantalla.
+
+### Definición (en `playwright.config.ts`)
+
+```typescript
+const POOL_CONFIG: Record<string, PoolDefinition> = {
+  'login':     { type: 'read',  order: 1 },
+  'dashboard': { type: 'read',  order: 2 },
+  'vehicles':  { type: 'read',  order: 3 },
+
+  // Pools WRITE (cuando existan — declarar dependsOn para evitar race conditions)
+  // 'vehicles-edit':   { type: 'write', order: 4, dependsOn: ['vehicles'] },
+};
+```
+
+### Tipos de Pool
+
+| Tipo | Descripción | Comportamiento |
+|---|---|---|
+| `read` | Solo lectura — no muta datos | Corre en paralelo con cualquier otro pool |
+| `write` | Crea/edita/elimina registros | Corre DESPUÉS de sus `dependsOn` (serializado) |
+
+### Ejecución paralela actual
+
+```
+Worker 1: Pool 1 | login     → TC-001 → TC-002 → TC-003
+Worker 2: Pool 2 | dashboard → TC-001 → TC-002
+Worker 3: Pool 3 | vehicles  → TC-001 → ... → TC-011
+```
+
+### Agregar un nuevo Pool
+
+1. Crear `tests/<carpeta>/` con al menos un `.spec.ts`
+2. Registrar en `POOL_CONFIG` en `playwright.config.ts`
+3. Crear `fixtures/<carpeta>/<fixture>.fixture.ts`
+4. El pool se activa automáticamente
+
+---
+
+## Reglas de Aislamiento de Datos
+
+> ⛔ Un VIN/registro de un pool `read` NUNCA debe ser modificado por un pool `write`.
+
+| Pool | Datos exclusivos |
+|---|---|
+| `vehicles` (filters) | VINs: `JN8BT3BA5TW332643`, `JN8BT3BA6TW332702`, ... |
+| `vehicles-edit` (futuro) | VINs propios — nunca los de filters |
+
+---
+
+## Comandos de Ejecución
+
+```powershell
+# Todos los pools en paralelo
+npx playwright test
+
+# Pool específico
+npx playwright test tests/login/
+npx playwright test tests/dashboard/
+npx playwright test tests/vehicles/
+
+# Por proyecto
+npx playwright test --project="Pool 1 | login"
+
+# Con slow motion (debugging visual)
+$env:SLOW_MO=800; npx playwright test tests/login/ --headed
+
+# TC específico
+npx playwright test tests/login/ --headed --grep "TC-LOGIN-001"
+
+# Ver todos los tests listados
+npx playwright test --list
+
+# Ver reporte HTML
+npx playwright show-report
+```
+
+---
+
+## Flujo SSO del Portal
+
+```
+Login Autoreg → #btnTriggerLogin
+  ↓ handleTermsAndConditions()  ← modal T&C opcional (espera 4s post-domcontentloaded)
+  ↓ waitForEvent('popup', 30s) ANTES del click en "Portal Distribuidor"
+  ↓ sso-login#token=JWT → waitForFunction(!sso-login) → /
+  ↓ Portal Distribuidor listo
+```
+
+**Regla SSO:** Todo spec que abra el portal DEBE tener `afterEach` con `logoutPortal()` + `closePortalTabs()`.
+
+---
+
+## Historial de Cambios Arquitectónicos
+
+| Fecha | Cambio |
+|---|---|
+| 2026-07-15 | Estructura inicial: tests/, fixtures/, helpers/ |
+| 2026-07-15 | Login (3 roles), Dashboard (reportes), Vehicles (11 filtros) |
+| 2026-07-16 | Screaming Architecture: reorganización por carpetas de pantalla |
+| 2026-07-16 | Pool Architecture: ejecución paralela por pantalla con POOL_CONFIG |
+| 2026-07-16 | Clasificación READ/WRITE + dependencias para race conditions |
+| 2026-07-16 | `handleTermsAndConditions()` — modal T&C primer login |
+
+---
+
+## Ver también
+
+- [Automated-Context.md](Automated-Context.md) — Reglas del agente de automatización
+- [context/CONTEXT.md](../context/CONTEXT.md) — Contexto general del proyecto
 
 ```
 Automated-Testing/
