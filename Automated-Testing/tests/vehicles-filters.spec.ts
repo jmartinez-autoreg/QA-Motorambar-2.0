@@ -315,35 +315,34 @@ test('TC-VEHICLES-FILTER-011: Filtro por Localidad — Dealer, Banco, Todos + Fa
 
   // ── Tab DEALER ────────────────────────────────────────────────────────────
   // ⛔ Orden CORRECTO: radio tab PRIMERO, luego abrir dropdown
-  // Si se abre el dropdown antes, el overlay DcDropdownMenu bloquea el click en los tabs
   await portal.locator('[role="radio"][aria-label="Concesionario"]').click();
   await portal.locator(SEL_VEHICLES.localidadBtn).click();
 
-  // Seleccionar primera localidad de tipo Dealer disponible
-  // DcSearchableSelect renderiza opciones como: li > button[title="nombre del dealer"]
-  const dealerOptions = portal.locator('li button[title]');
-  await dealerOptions.first().waitFor({ state: 'visible', timeout: 5_000 });
+  // El primer li button[title] es siempre "Todas las Localidades" (opción de reset)
+  // Filtrar para obtener SOLO opciones reales (dealers)
+  const dealerOptions = portal.locator('li button[title]').filter({ hasNotText: 'Todas las Localidades' });
+  await dealerOptions.first().waitFor({ state: 'visible', timeout: 5_000 }).catch(() => {});
   const dealerCount = await dealerOptions.count();
   if (dealerCount > 0) {
     const dealerText = await dealerOptions.first().getAttribute('title');
     await dealerOptions.first().click();
     await waitForGridLoad(portal);
     console.log(`Dealer seleccionado: "${dealerText}"`);
-    // RESULTADO: Grid filtrado por Dealer
     await expect(portal.locator(SEL_VEHICLES.gridTable)).toBeVisible();
     await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-011-dealer.png', fullPage: false });
-    // Limpiar
     await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
     await waitForGridLoad(portal);
+  } else {
+    console.log('No hay dealers disponibles — cerrando dropdown');
+    await portal.keyboard.press('Escape');
   }
 
   // ── Tab BANCO ─────────────────────────────────────────────────────────────
-  // Tab PRIMERO, luego dropdown
   await portal.locator('[role="radio"][aria-label="Banco / Institución Financiera"]').click();
   await portal.locator(SEL_VEHICLES.localidadBtn).click();
 
-  const bancoOptions = portal.locator('li button[title]');
-  await bancoOptions.first().waitFor({ state: 'visible', timeout: 5_000 });
+  const bancoOptions = portal.locator('li button[title]').filter({ hasNotText: 'Todas las Localidades' });
+  await bancoOptions.first().waitFor({ state: 'visible', timeout: 5_000 }).catch(() => {});
   const bancoCount = await bancoOptions.count();
   if (bancoCount > 0) {
     const bancoText = await bancoOptions.first().getAttribute('title');
@@ -354,22 +353,21 @@ test('TC-VEHICLES-FILTER-011: Filtro por Localidad — Dealer, Banco, Todos + Fa
     await portal.screenshot({ path: 'test-results/TC-VEHICLES-FILTER-011-banco.png', fullPage: false });
     await portal.locator(SEL_VEHICLES.limpiarFiltrosBtn).click();
     await waitForGridLoad(portal);
+  } else {
+    console.log('No hay bancos disponibles — cerrando dropdown');
+    await portal.keyboard.press('Escape');
   }
 
   // ── Tab TODOS + FAVORITOS ─────────────────────────────────────────────────
-  // REGLA: radio tab + favoritos PRIMERO (fuera del dropdown), luego abrir dropdown
   await portal.locator('[role="radio"][aria-label="Todos"]').click();
 
-  // El botón favoritos es role="switch" con aria-label="Solo Favoritos" — clickear antes del dropdown
   const favBtn = portal.locator('button[role="switch"][title="Solo Favoritos"]');
   if (await favBtn.isVisible().catch(() => false)) {
     await favBtn.click();
-
-    // AHORA abrir el dropdown (solo tiene favoritos)
     await portal.locator(SEL_VEHICLES.localidadBtn).click();
 
-    // Seleccionar primer favorito disponible — mismo patrón li button[title]
-    const favOptions = portal.locator('li button[title]');
+    // Filtrar "Todas las Localidades" — obtener solo favoritos reales
+    const favOptions = portal.locator('li button[title]').filter({ hasNotText: 'Todas las Localidades' });
     const favCount = await favOptions.count();
     if (favCount > 0) {
       const favText = await favOptions.first().getAttribute('title');
@@ -384,6 +382,5 @@ test('TC-VEHICLES-FILTER-011: Filtro por Localidad — Dealer, Banco, Todos + Fa
     }
   } else {
     console.log('Botón de favoritos no visible');
-    await portal.keyboard.press('Escape');
   }
 });

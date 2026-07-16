@@ -438,6 +438,82 @@ Usuario dice "sigue sin codegen" →  Continuar con FASE 1 (Descubrimiento)
 > que abra un portal federado. Los helpers (`logoutPortal`, `closePortalTabs`) ya existen
 > en `helpers/auth-helpers.ts` — no recrearlos.
 
+### FIX #10 — Leer código fuente del componente ANTES de escribir interacciones
+
+> ⛔ **REGLA:** Para cualquier componente React/SPA custom, leer su `.tsx`/`.jsx` ANTES de escribir selectores o interacciones. Específicamente buscar:
+> - **Overlays**: `fixed inset-0` o `z-40` que bloquean clicks externos cuando un dropdown está abierto.
+> - **Opciones de reset**: La primera opción de un select puede ser una opción "Todos / All" con `value=""` — filtrarla antes de seleccionar.
+> - **Renders condicionales**: Modales opcionales, campos que aparecen/desaparecen, tabs que cambian el estado.
+> - **Orden de interacción obligatorio**: Algunos controles (radio tabs, favoritos) deben clickearse ANTES de abrir el dropdown — si el dropdown está abierto primero, su overlay bloquea los clicks externos.
+>
+> **Orden correcto para componentes con overlay:**
+> ```typescript
+> // ✅ Controls fuera del dropdown PRIMERO, luego abrir el dropdown
+> await portal.locator('[role="radio"]...').click();    // tab (fuera del overlay)
+> await portal.locator('[role="switch"]...').click();   // toggle (fuera del overlay)
+> await portal.locator('button.trigger').click();       // AHORA abrir el dropdown
+> await portal.locator('li button[title]').filter(...); // seleccionar opción (dentro = no bloqueado)
+> ```
+>
+> ⛔ **Repo primero, MCP segundo.** Si el código fuente está disponible localmente:
+> 1. Leer el `.tsx` del componente → entender estructura, props, estados, overlays, opciones de reset
+> 2. Confirmar con MCP Browser solo los IDs/atributos reales en el DOM
+> No hacer discovery MCP sin haber leído el componente primero.
+
+### FIX #11 — Opciones de reset en selects: siempre filtrar antes de seleccionar
+
+> Muchos componentes SPA tienen una opción de "reset/all" como primer elemento del dropdown
+> (ej: `{ value: "", label: "Todos" }` o `{ value: "", label: "Todas las Localidades" }`).
+> Si se selecciona esta opción, el filtro se limpia en vez de aplicarse.
+>
+> ```typescript
+> // ❌ Incorrecto — puede seleccionar la opción de reset (primera = "Todos / All")
+> portal.locator('li button[title]').first().click();
+>
+> // ✅ Correcto — excluir la opción de reset por texto
+> portal.locator('li button[title]').filter({ hasNotText: 'Todos' }).first().click();
+> portal.locator('li button[title]').filter({ hasNotText: /todas las localidades/i }).first().click();
+> ```
+>
+> Detectar en el código fuente: buscar el array de opciones del componente → ver si la primera tiene `value: ""`.
+> Si sí → siempre filtrar por `hasNotText` del label de esa opción al automatizar.
+
+### FIX #12 — `waitFor` de elementos opcionales SIEMPRE con `.catch(() => {})`
+
+> Cualquier `waitFor` que espera un elemento que **puede o no aparecer** (modal opcional, dropdown
+> que puede estar vacío, elemento condicional) DEBE ir con `.catch(() => {})`.
+> Sin el catch, un timeout lanza excepción y falla el test aunque el comportamiento sea correcto.
+>
+> ```typescript
+> // ❌ Falla si el elemento no aparece (modal opcional, opciones vacías)
+> await page.locator('#optionalModal').waitFor({ state: 'visible', timeout: 4_000 });
+>
+> // ✅ Timeout silencioso — luego verificar con count() o isVisible()
+> await page.locator('#optionalModal').waitFor({ state: 'visible', timeout: 4_000 }).catch(() => {});
+> const count = await page.locator('li button[title]').count();
+> if (count > 0) { /* hay opciones */ }
+> ```
+>
+> **Gate de entrega:** Antes de declarar un spec como "listo", ejecutar
+> `npx playwright test <spec>.spec.ts` y mostrar el output con "X passed, 0 failed".
+> Sin ese output = el spec NO está listo, sin excepción.
+
+### FIX #13 — Modales condicionales: esperar página cargada ANTES del conteo de timeout
+
+> Cuando un modal opcional aparece post-navegación (ej: T&C en primer login), el timeout
+> debe empezar DESPUÉS de que la página destino esté completamente cargada, no durante la
+> navegación. De lo contrario el modal puede no haber rendereado aún cuando expira el timeout.
+>
+> ```typescript
+> // ❌ Frágil — el conteo empieza DURANTE la navegación (cold start falla)
+> await page.locator('#modal').waitFor({ state: 'visible', timeout: 4_000 });
+>
+> // ✅ Robusto — esperar página cargada PRIMERO, luego iniciar conteo
+> await page.waitForURL(/\/destino/i, { timeout: 30_000 });
+> await page.waitForLoadState('domcontentloaded', { timeout: 15_000 });
+> await page.locator('#modal').waitFor({ state: 'visible', timeout: 4_000 }).catch(() => {});
+> ```
+
 ---
 
 ## FASE 1 — Descubrimiento de la Aplicación

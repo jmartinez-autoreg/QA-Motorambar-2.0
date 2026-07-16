@@ -257,6 +257,30 @@ await portal.locator('[aria-label="Close dropdown"]').click();  // cerrar overla
 await waitForGridLoad(portal);
 ```
 
+### LocationDropDown — Regla de interacción con overlay
+
+**⛔ PATRÓN OBLIGATORIO:** El `DcDropdownMenu` interno renderiza un overlay `fixed inset-0 z-40` cuando el dropdown está abierto. Este overlay bloquea clicks en cualquier control que esté FUERA del dropdown (radio tabs, botón favoritos).
+
+**Orden correcto:**
+```typescript
+// 1. Radio tab y/o favoritos PRIMERO (sin dropdown abierto)
+await portal.locator('[role="radio"][aria-label="Concesionario"]').click();
+await portal.locator('button[role="switch"][title="Solo Favoritos"]').click();
+
+// 2. LUEGO abrir el dropdown
+await portal.locator('button:has-text("Todas las Localidades")').click();
+
+// 3. Seleccionar opción REAL (excluir "Todas las Localidades" = primera opción de reset)
+await portal.locator('li button[title]').filter({ hasNotText: 'Todas las Localidades' }).first().click();
+```
+
+**waitFor de opciones opcionales:** siempre con `.catch(() => {})` — si no hay opciones disponibles no debe fallar el test:
+```typescript
+await options.first().waitFor({ state: 'visible', timeout: 5_000 }).catch(() => {});
+const count = await options.count();
+if (count > 0) { /* seleccionar */ }
+```
+
 ### DcDatePicker — Selector de fecha
 
 **Componente:** `frontend/src/components/ui/DcDatePicker.tsx`
