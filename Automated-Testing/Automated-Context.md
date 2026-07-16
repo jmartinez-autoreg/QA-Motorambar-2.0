@@ -334,6 +334,93 @@ TC-CO-002:      Verificar reglas de completitud         → (ÚLTIMO)
 
 ---
 
+## Reglas de Negocio del Sistema
+
+### Flujo completo de vida de un vehículo
+
+```
+1. IMPORT EXCEL
+   → CO = Pendiente | CPA = Pendiente | Invoice = Pendiente
+   → ReleaseStatus = PendingDocuments(1)
+
+2. CO AUTO-GENERADO (Worker background)
+   → Si todos los campos CO están completos → CO = Completado
+   → Worker: VehicleReleaseStatusJob (asíncrono, puede tardar segundos/minutos)
+
+3. IMPORT CPA (archivo separado — Certificados de Pre-Autorización)
+   → UploadCpaFile → Worker ProcessCpaPage → vincula CPA al vehículo por VIN
+   → CPA = Completado
+
+4. DOCUMENTOS DE FACTURA (upload manual)
+   → Invoice = Completado
+
+5. RELEASE STATUS RECALCULADO (Worker)
+   → Según VehicleCompletenessRule del tenant:
+     RequiresCo + RequiresCpa + RequiresInvoice → todos deben ser Completado
+   → ReleaseStatus = Complete(3)
+
+6. ENVÍO A PDV (Portal de Vehículos — integración externa)
+   → Botones habilitados cuando Release = Complete
+   → Dos tipos: PdvDataSent (metadata) y PdvDocumentsSent (documentos)
+   → Se envían en batches vía Service Bus → Worker procesa
+```
+
+### Eliminación de vehículos
+
+- Delete simple por ID (sin restricciones de estado CO/CPA/Invoice)
+- Batch delete disponible (múltiples IDs)
+- Accesible desde el grid (acción individual o batch)
+
+### CPA — Certificados de Pre-Autorización
+
+- Archivo separado del Excel de vehículos
+- Flujo: Upload → Worker procesa páginas → vincula por VIN
+- Si el VIN no coincide → puede corregirse manualmente (`CorrectCpaVin`)
+- Si el vehículo cambia → puede re-vincularse (`RelinkCpa`)
+- Impacta `StatusCPAId` del vehículo
+
+### PDV — Portal de Vehículos (integración externa)
+
+- Sistema externo (gobierno/CESCO)
+- Columnas en grid: **PDV-Datos** (`PdvDataSent`) y **PDV-Documentos** (`PdvDocumentsSent`)
+- Se envían en batches via Service Bus
+- Requiere que el vehículo esté en estado listo (Release = Complete o con permiso `GridVehicles.SendToPdv`)
+
+### Release Status (estado de liberación al cliente)
+
+| ID | Estado | Significado |
+|---|---|---|
+| 1 | `PendingDocuments` | Faltan documentos requeridos |
+| 2 | `PendingCreditLetter` | Falta carta de crédito |
+| 3 | `Complete` | Listo para entrega al cliente |
+
+- **Manual Release:** Puede forzarse a `Complete` si el vehículo está en `PendingDocuments` o `PendingCreditLetter`
+- **Permiso requerido:** `Vehicles.ManualRelease`
+
+### Reglas de Completitud (VehicleCompletenessRule)
+
+- **Una regla por tenant** (restricción única)
+- Configura qué es obligatorio para `ReleaseStatus = Complete`:
+
+| Campo | Descripción |
+|---|---|
+| `RequiresCo` | CO debe estar Completado |
+| `RequiresCpa` | CPA debe estar Completado |
+| `RequiresInvoice` | Factura debe estar Completada |
+| `GroupByCreditLetterNumber` | Agrupa vehículos por Carta de Crédito |
+
+- Gestionado desde Administración (solo SysAdmin)
+
+### Roles y acceso
+
+| Rol | Accesos clave |
+|---|---|
+| **Distribuidor** | Dashboard, Vehículos Importados, Importar Vehículos, Importar CPA, Historial, Reportes, Notificaciones |
+| **Cliente (Consulta Distribuidor)** | Vista de vehículos asignados — READ ONLY (sin permisos de reporte) |
+| **SysAdmin** | Todo + Administración (Tenants, Usuarios, Plantillas, Completitud, Firma Digital, Favoritos) |
+
+---
+
 ## Lecciones Aprendidas (historial de reworks)
 
 | Fecha | Error | Causa raíz | Fix aplicado |
