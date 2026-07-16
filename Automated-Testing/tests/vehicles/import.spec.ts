@@ -24,6 +24,8 @@ import { SEL, URLS, TEST_DATA } from '../../fixtures/login/login.fixture';
 import { IMPORT_DATA } from '../../fixtures/vehicles/import.fixture';
 import { waitForPageIdle } from '../../helpers/wait-helpers';
 import { logoutPortal, closePortalTabs, handleTermsAndConditions } from '../../helpers/auth-helpers';
+import { runPreconditionCleanup } from '../../db/helpers/precondition';
+import { db } from '../../db/repositories';
 
 // ─── Selectores confirmados con Codegen + análisis de VehicleImportUpload.tsx ─
 
@@ -81,6 +83,19 @@ async function loginAndOpenPortal(
   await portal.locator('h2:has-text("Dashboard")').waitFor({ state: 'visible', timeout: 30_000 });
   return portal;
 }
+
+// ─── Precondition: limpiar datos de prueba antes de importar ─────────────────
+// REGLA: todo spec WRITE debe ejecutar la limpieza en beforeAll.
+// Si falla → el test lanza error descriptivo y para (no continúa con datos sucios).
+
+test.beforeAll(async () => {
+  await runPreconditionCleanup();
+});
+
+// ─── afterAll: cerrar conexión DB ─────────────────────────────────────────────
+test.afterAll(async () => {
+  await db.close();
+});
 
 // ─── afterEach: logout obligatorio (regla SSO) ────────────────────────────────
 

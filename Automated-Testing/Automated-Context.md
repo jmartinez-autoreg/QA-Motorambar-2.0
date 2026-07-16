@@ -170,6 +170,36 @@ Cada pool tiene su set exclusivo de VINs/registros. NUNCA compartir un VIN entre
 
 ---
 
+## REGLA 11 — Precondición obligatoria en todo spec WRITE
+
+Todo spec de tipo `write` (import, edit, delete) DEBE incluir:
+
+```typescript
+import { runPreconditionCleanup } from '../../db/helpers/precondition';
+import { db } from '../../db/repositories';
+
+test.beforeAll(async () => {
+  await runPreconditionCleanup(); // limpia datos de prueba remanentes
+});
+
+test.afterAll(async () => {
+  await db.close(); // cierra conexión DB
+});
+```
+
+**Qué hace `runPreconditionCleanup()`:**
+1. Verifica si existen datos de prueba en DB (Vehicles con test VINs, ImportLogs del archivo)
+2. Si no existen → log "sistema limpio" y continúa
+3. Si existen → los elimina en orden (FK: RowErrors → Vehicles → ImportLogs)
+4. Si falla → **lanza error descriptivo y para** — no continúa con datos sucios
+
+**Cuándo analizar si agregar precondición:**
+> Al crear un nuevo spec WRITE → identificar qué tablas afecta (Vehicles, ImportLogs, etc.)
+> → extender `precondition.ts` con la limpieza correspondiente.
+> Si los datos encontrados son inesperados → loggear y lanzar error para que el usuario revise.
+
+---
+
 ## Mapa Excel → DB → UI (Pantalla Ver/Editar Vehículo)
 
 > [CO] = Campo requerido para generar/regenerar CO (Certificado de Origen).

@@ -17,7 +17,11 @@ class DbConnection {
     if (!this.pool) {
       this.pool = new Pool(
         DB_CONFIG.connectionString
-          ? { connectionString: DB_CONFIG.connectionString }
+          ? {
+              connectionString: DB_CONFIG.connectionString,
+              // Azure PostgreSQL requiere SSL — rejectUnauthorized: false acepta cert self-signed
+              ssl: { rejectUnauthorized: false },
+            }
           : {
               host:     DB_CONFIG.host,
               port:     DB_CONFIG.port,
@@ -27,7 +31,7 @@ class DbConnection {
               max:      DB_CONFIG.max,
               idleTimeoutMillis:    DB_CONFIG.idleTimeoutMs,
               connectionTimeoutMillis: DB_CONFIG.connectionTimeoutMs,
-              ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+              ssl: { rejectUnauthorized: false },
             }
       );
 
