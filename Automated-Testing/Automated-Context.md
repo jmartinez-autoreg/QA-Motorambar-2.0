@@ -236,6 +236,28 @@ REGULATORY: Body Type · Title Date
 FINANCIAL:  Invoice No. · Dealer
 ```
 
+### Regla de negocio: Auto-generación de CO
+
+- Al importar → `StatusCOId = Pendiente` siempre (independientemente de si los campos están completos).
+- El sistema tiene un **Worker en background** que detecta vehículos con todos los campos CO completos
+  y auto-genera el CO → cambia `StatusCOId` a `Completado`.
+- Este proceso es **asíncrono** — puede tardar segundos o minutos según la carga del Worker.
+
+**Impacto en el flujo E2E:**
+```
+TC-IMPORT-001:  Import Excel (con campos CO completos) → CO = Pendiente ✓
+TC-IMPORT-002:  Verificar vehículos en grid             → CO = Pendiente ✓
+...
+[tiempo para que el Worker procese]
+...
+TC-CO-001:      Verificar CO auto-generado              → CO = Completado ✓ (ÚLTIMO)
+TC-CO-002:      Verificar reglas de completitud         → (ÚLTIMO)
+```
+
+- **Los TCs de CO deben ser los ÚLTIMOS en ejecutarse** dentro del pool, para dar tiempo al Worker.
+- Si el CO no cambió a `Completado` → el test puede esperar en polling hasta un timeout configurable.
+- Los TCs de reglas de completitud también van al final por la misma razón.
+
 ### Columnas visibles en el Grid (`/import`)
 
 | Columna | Fuente |
