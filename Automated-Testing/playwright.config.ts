@@ -51,9 +51,8 @@ const POOL_CONFIG: Record<string, PoolDefinition> = {
   'vehicles':  { type: 'read',  order: 3 },  // solo filtros = read-only
 
   // ── WRITE pools (agregar cuando existan specs de edición/eliminación) ───
-  // 'vehicles-edit':   { type: 'write', order: 4, dependsOn: ['vehicles'] },
-  // 'vehicles-import': { type: 'write', order: 5, dependsOn: ['vehicles-edit'] },
-  // 'vehicles-delete': { type: 'write', order: 6, dependsOn: ['vehicles-edit'] },
+  // Pool 4: vehicles-import — corre después de vehicles (read) para no interferir con filtros
+  // 'vehicles-import': { type: 'write', order: 4, dependsOn: ['vehicles'] },
 };
 
 const TESTS_DIR = path.join(__dirname, 'tests');
