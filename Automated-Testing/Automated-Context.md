@@ -170,6 +170,86 @@ Cada pool tiene su set exclusivo de VINs/registros. NUNCA compartir un VIN entre
 
 ---
 
+## Mapa Excel → DB → UI (Pantalla Ver/Editar Vehículo)
+
+> [CO] = Campo requerido para generar/regenerar CO (Certificado de Origen).
+> Los campos marcados [CO] son los que determinan si un vehículo tiene CO completo.
+
+### Sección: DETAILS
+
+| Campo UI | Label UI | Columna Excel | Campo DB | [CO] |
+|---|---|---|---|---|
+| VIN | VIN | `vin` | `Vehicle.Vin` | ✅ |
+| Make | MAKE | `Maker` | `Vehicle.MakerId → Maker.Name` | ✅ |
+| Model | MODEL | `Model` | `Vehicle.MakerModelId → MakerModel.Name` | — |
+| Year | YEAR | `Year` | `Vehicle.Year` | ✅ |
+| Assigned Client | ASSIGNED CLIENT | `Client Id` | `Vehicle.ClientAssignedId → ParentClient.Name` | — |
+
+### Sección: TECHNICAL SPECIFICATIONS
+
+| Campo UI | Label UI | Columna Excel | Campo DB | [CO] |
+|---|---|---|---|---|
+| Vehicle Color | VEHICLE COLOR | `Auto Color` | `Vehicle.AutoColorCode` | — |
+| Doors | DOORS | `Doors` | `Vehicle.Doors` | — |
+| Cylinders | CYLINDERS | `Pistons` | `Vehicle.Pistons` | ✅ |
+| Horsepower | HORSEPOWER | `Horsepower` | `Vehicle.HorsePower` | ✅ |
+| Propulsion Type | PROPULSION TYPE | `Propulsion Type Id` | `Vehicle.VehiclePropulsionTypeId` | — |
+| Vehicle Weight | VEHICLE WEIGHT | `Unloaded Weight` | `Vehicle.UnloadedWeight` | ✅ |
+| Load Capacity | LOAD CAPACITY | `Load Capacity` | `Vehicle.LoadCapacity` | ✅ |
+| Vehicle Unit | VEHICLE UNIT | — | `Vehicle.Unit` | — |
+| Series Or Model | SERIES OR MODEL | `Series Or Model` | `Vehicle.SeriesOrModel` | ✅ |
+
+### Sección: REGULATORY AND ORIGIN
+
+| Campo UI | Label UI | Columna Excel | Campo DB | [CO] |
+|---|---|---|---|---|
+| Origin Code | ORIGIN CODE | `Country Origin Code` | `Vehicle.CountryOriginCode` | — |
+| Body Type | BODY TYPE | `Body Type` | `Vehicle.BodyType` | ✅ |
+| Title No. | TITLE NO. | — | `Vehicle.TitleNumber` | — |
+| Title Date | TITLE DATE | `Title Date` | `Vehicle.TitleDate` | ✅ |
+
+### Sección: FINANCIAL
+
+| Campo UI | Label UI | Columna Excel | Campo DB | [CO] |
+|---|---|---|---|---|
+| Contribution Price | CONTRIBUTION PRICE | `DNP` | `Vehicle.SalePrice` | — |
+| Tax | TAX | `Sale Tax` | `Vehicle.SaleTax` | — |
+| Tax Payment Date | TAX PAYMENT DATE | `Tax Payment Date` | `Vehicle.TaxPaymentDate` | — |
+| Tax Declaration No. | TAX DECLARATION NO. | — | `Vehicle.ArbDeclaration` | — |
+| CPA ID | CPA ID | — | `Vehicle.CpaNumber` | — |
+| Contributor ID | CONTRIBUTOR ID | `Contributor Id` | `Vehicle.ContributorId` | — |
+| Invoice No. | INVOICE NO. | `Invoice` | `Vehicle.Invoice` | ✅ |
+| Dealer | DEALER | `Dealer` | `Vehicle.DealerId → ParentClient.Name` | ✅ |
+| License No. | LICENSE NO. | `Dealer License` | `Vehicle.DealerLicence` | — |
+| Client ID | CLIENT ID | `Client Id` | `Vehicle.ClientId` | — |
+| Sales Order No. | SALES ORDER NO. | `Sales Order Number` | `Vehicle.SalesOrderNumber` | — |
+| Letter of Credit No. | LETTER OF CREDIT NO. | `Credit Letter Number` | CreditLetterGroup | — |
+| Financial Institution | FINANCIAL INSTITUTION | (via `Client Id`) | `Vehicle.FinantialInstitutionId` | — |
+| Sale Price | SALE PRICE | `MSRP` | `Vehicle.TaxablePrice` | — |
+
+### Campos [CO] — resumen para TCs de completitud
+
+```
+DETAILS:    VIN · Make · Year
+TECHNICAL:  Cylinders · Horsepower · Vehicle Weight · Load Capacity · Series Or Model
+REGULATORY: Body Type · Title Date
+FINANCIAL:  Invoice No. · Dealer
+```
+
+### Columnas visibles en el Grid (`/import`)
+
+| Columna | Fuente |
+|---|---|
+| VIN | `Vehicle.Vin` |
+| Vehículo | Maker + Model + Year |
+| Factura | `Vehicle.Invoice` |
+| Nro. Carta de Crédito | CreditLetterGroup |
+| Asignado a | `ClientAssigned.Name` |
+| Estado CO / CPA / Factura | `StatusCOId/CPAId/InvoiceId` (Pendiente al importar) |
+| PDV-Datos / PDV-Documentos | `false` al importar |
+
+---
+
 ## Selectores Confirmados en DOM
 
 ### Autoreg Login (`/Forms/Account/LoginNew.aspx`)
